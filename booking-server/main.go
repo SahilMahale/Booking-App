@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/SahilMahale/Booking-App/booking-server/server"
 )
 
 const totalTIckets = 50
@@ -57,30 +57,6 @@ func main() {
 
 	// }
 	// wg.Wait()
-
-	app := fiber.New(fiber.Config{
-		AppName:       "Bookings APP",
-		StrictRouting: true,
-		ServerHeader:  "Bookings",
-	})
-
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Booking APP!")
-	})
-	app.Get("/tickets/:user?", func(c *fiber.Ctx) error {
-		if c.Params("user") != "" {
-			user := c.Params("user")
-			return c.SendString(fmt.Sprintf("%s has %d tickets\n", user, totalTIckets))
-		}
-		return c.SendString(fmt.Sprintf("%d tickets left\n", totalTIckets))
-	})
-
-	app.Get("/bookings", func(c *fiber.Ctx) error {
-		if user := c.Query("user"); user != "" {
-			return c.SendString(fmt.Sprintf("%s has %d bookings\n", user, 3))
-		}
-		return c.SendString("will return all the bookings")
-	})
-
-	app.Listen(":3000")
+	bookingService := server.NewBookingService("Booking app", ":8080", 50)
+	bookingService.StartBookingService()
 }
