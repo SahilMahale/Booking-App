@@ -7,23 +7,19 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-
-	"github.com/google/uuid"
 )
 
 type UserData struct {
-	Id            string `gorm:"primaryKey"`
-	Username      string
+	Username      string `gorm:"primaryKey"`
 	Email         string
 	BookedTickets uint
+	Pass          string
 }
 
 var reader = bufio.NewReader(os.Stdin)
 
 func NewUser() UserData {
-	return UserData{
-		Id: uuid.New().String(),
-	}
+	return UserData{}
 }
 func (u *UserData) ReadUserInfo() {
 	var err error
@@ -70,7 +66,7 @@ func (u UserData) BookTicket(bookings *[]UserData, remainingTickets *uint, total
 func (u UserData) SendTicket(wg *sync.WaitGroup) {
 	ticket := fmt.Sprintf("Sending ticket:\n %d tickets for %s \n to Email: %s\n", u.BookedTickets, u.Username, u.Email)
 	data := []byte(ticket)
-	fileName := "Ticket" + u.Id + u.Username + ".txt"
+	fileName := "Ticket" + u.Username + ".txt"
 	os.WriteFile(fileName, data, 0644)
 	// fmt.Printf("Ticket Created for username:%s", u.Username)
 	wg.Done()
