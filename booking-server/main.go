@@ -1,21 +1,19 @@
 package main
 
 import (
-	"fmt"
-	"sync"
-
+	"github.com/SahilMahale/Booking-App/booking-server/internal/db"
 	"github.com/SahilMahale/Booking-App/booking-server/server"
 )
 
 const totalTIckets = 50
 
-var wg = sync.WaitGroup{}
+// var wg = sync.WaitGroup{}
 
-func greetUsers(conferenceName string, remainingTickets uint) {
-	fmt.Printf("Conference Booking app for: %s\n", conferenceName)
-	fmt.Printf("Remaining tickets: %d\n", remainingTickets)
-	fmt.Println("Get yout tickets here, tickets.....")
-}
+// func greetUsers(conferenceName string, remainingTickets uint) {
+// 	fmt.Printf("Conference Booking app for: %s\n", conferenceName)
+// 	fmt.Printf("Remaining tickets: %d\n", remainingTickets)
+// 	fmt.Println("Get yout tickets here, tickets.....")
+// }
 
 func main() {
 	// conferenceName := "Go Conference"
@@ -57,6 +55,10 @@ func main() {
 
 	// }
 	// wg.Wait()
-	bookingService := server.NewBookingService("Booking app", ":8080", 50)
+	db, err := db.NewDBConnection()
+	if err != nil {
+		panic(err)
+	}
+	bookingService := server.NewBookingService("Booking app", ":8080", totalTIckets, db)
 	bookingService.StartBookingService()
 }

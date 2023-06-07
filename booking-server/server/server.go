@@ -3,7 +3,9 @@ package server
 import (
 	"fmt"
 
+	"github.com/SahilMahale/Booking-App/booking-server/internal/user"
 	"github.com/SahilMahale/Booking-App/booking-server/server/models"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
@@ -13,6 +15,7 @@ type bookingService struct {
 	totalTickets uint
 	app          *fiber.App
 	ip           string
+	DbInterface  interface{}
 }
 type BookingServicer interface {
 	GetBookings(c *fiber.Ctx) error
@@ -24,7 +27,7 @@ type BookingServicer interface {
 	StartBookingService()
 }
 
-func NewBookingService(appname, ip string, totalTickets uint) bookingService {
+func NewBookingService(appname, ip string, totalTickets uint, db interface{}) bookingService {
 	return bookingService{
 		app: fiber.New(fiber.Config{
 			AppName:       appname,
@@ -33,6 +36,7 @@ func NewBookingService(appname, ip string, totalTickets uint) bookingService {
 		}),
 		ip:           ip,
 		totalTickets: totalTickets,
+		DbInterface:  db,
 	}
 }
 
@@ -61,11 +65,21 @@ func (B *bookingService) GetBookings(c *fiber.Ctx) error {
 }
 
 func (B *bookingService) CreateUser(c *fiber.Ctx) error {
+	var userCtrl user.UserOps
 	u := new(models.UserSignup)
+
 	if err := c.BodyParser(u); err != nil {
 		return err
 	}
-	return c.Status(fiber.StatusCreated).JSON(u)
+
+	userCtrl = user.NewUserController(B.DbInterface)
+
+	err := userCtrl.CreateUser(u.Username, u.Email, u.Password)
+	if err != nil {
+		c.Status(fiber.StatusInternalServerError).SendString(fmt.Sprintf("Error: %v", err.Error()))
+	}
+
+	return c.SendStatus(fiber.StatusCreated)
 }
 
 func (B *bookingService) LoginUser(c *fiber.Ctx) error {
