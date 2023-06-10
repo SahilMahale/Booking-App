@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 
+	"github.com/SahilMahale/Booking-App/booking-server/internal/db"
 	"github.com/SahilMahale/Booking-App/booking-server/internal/user"
 	"github.com/SahilMahale/Booking-App/booking-server/server/models"
 
@@ -15,7 +16,7 @@ type bookingService struct {
 	totalTickets uint
 	app          *fiber.App
 	ip           string
-	DbInterface  interface{}
+	DbInterface  db.DbConnection
 }
 type BookingServicer interface {
 	GetBookings(c *fiber.Ctx) error
@@ -27,7 +28,7 @@ type BookingServicer interface {
 	StartBookingService()
 }
 
-func NewBookingService(appname, ip string, totalTickets uint, db interface{}) bookingService {
+func NewBookingService(appname, ip string, totalTickets uint, db db.DbConnection) bookingService {
 	return bookingService{
 		app: fiber.New(fiber.Config{
 			AppName:       appname,
@@ -75,8 +76,8 @@ func (B *bookingService) CreateUser(c *fiber.Ctx) error {
 	userCtrl = user.NewUserController(B.DbInterface)
 
 	err := userCtrl.CreateUser(u.Username, u.Email, u.Password)
-	if err != nil {
-		c.Status(fiber.StatusInternalServerError).SendString(fmt.Sprintf("Error: %v", err.Error()))
+	if err.Err != nil {
+		return c.Status(err.HttpCode).SendString(err.Err.Error())
 	}
 
 	return c.SendStatus(fiber.StatusCreated)

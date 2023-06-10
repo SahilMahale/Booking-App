@@ -5,23 +5,24 @@ import (
 	"gorm.io/gorm"
 )
 
-type dbConnection struct {
+type DbConnection struct {
 	Db *gorm.DB
 }
 
 // type DbInterface interface {
 // }
 
-func NewDBConnection() (dbConnection, error) {
+func NewDBConnection() (DbConnection, error) {
 	// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
-	dsn := "root:TAa9YiHN4c@tcp(10.42.0.47:3306)/BookigsDatabase?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:TAa9YiHN4c@tcp(10.42.0.130:3306)/BookigsDatabase?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return dbConnection{}, err
+		return DbConnection{}, err
 	}
 	//Automigrate and create the tables
-	db.AutoMigrate(User{}, Bookings{})
-	return dbConnection{
+	db.AutoMigrate(User{})
+	db.AutoMigrate(Bookings{})
+	return DbConnection{
 		Db: db,
 	}, nil
 }
