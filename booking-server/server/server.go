@@ -84,11 +84,17 @@ func (B *bookingService) CreateUser(c *fiber.Ctx) error {
 }
 
 func (B *bookingService) LoginUser(c *fiber.Ctx) error {
+	var userCtrl user.UserOps
 	u := new(models.UserSignin)
 	if err := c.BodyParser(u); err != nil {
 		return err
 	}
-	return c.Status(fiber.StatusAccepted).JSON(u)
+	userCtrl = user.NewUserController(B.DbInterface)
+	err := userCtrl.LoginUser(u.Username, u.Password)
+	if err.Err != nil {
+		return c.Status(err.HttpCode).SendString(err.Err.Error())
+	}
+	return c.SendStatus(fiber.StatusAccepted)
 }
 
 func (B *bookingService) BookTickets(c *fiber.Ctx) error {

@@ -1,10 +1,13 @@
 package helper
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type MyHTTPErrors struct {
@@ -24,14 +27,25 @@ func ValidateBooking(bookedTickets, remainingTickets uint) (isvalidBooking bool)
 }
 
 func ErrorMatch(err error) MyHTTPErrors {
-	if strings.Contains(err.Error(), "Duplicate entry") {
+	if errors.Is(err, gorm.ErrDuplicatedKey) {
 		return MyHTTPErrors{
 			Err:      fmt.Errorf("entry already exists"),
 			HttpCode: fiber.StatusBadRequest,
 		}
-	}
-	return MyHTTPErrors{
-		Err:      fmt.Errorf("internal server error"),
-		HttpCode: fiber.StatusInternalServerError,
+	} else if errors.Is(err, gorm.ErrRecordNotFound) {
+		return MyHTTPErrors{
+			Err:      fmt.Errorf("entry doesn't exist"),
+			HttpCode: fiber.StatusForbidden,
+		}
+	} else if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+		return MyHTTPErrors{
+			Err:      fmt.Errorf("password wrong"),
+			HttpCode: fiber.StatusForbidden,
+		}
+	} else {
+		return MyHTTPErrors{
+			Err:      fmt.Errorf("internal server error"),
+			HttpCode: fiber.StatusInternalServerError,
+		}
 	}
 }
