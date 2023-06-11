@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 
+	"github.com/SahilMahale/Booking-App/booking-server/internal/bookings"
 	"github.com/SahilMahale/Booking-App/booking-server/internal/db"
 	"github.com/SahilMahale/Booking-App/booking-server/internal/user"
 	"github.com/SahilMahale/Booking-App/booking-server/server/models"
@@ -50,14 +51,6 @@ func (B *bookingService) initLogger() {
 	}))
 }
 
-func (B *bookingService) GetTickets(c *fiber.Ctx) error {
-	if user := c.Query("user"); user != "" {
-		userData := models.UserTicketsResponse{Username: user, TicketsBooked: 5}
-		return c.JSON(userData)
-	}
-	return c.JSON(models.TicketsResponse{TicketsLeft: B.totalTickets})
-}
-
 func (B *bookingService) GetBookings(c *fiber.Ctx) error {
 	if user := c.Query("user"); user != "" {
 		return c.SendString(fmt.Sprintf("%s has %d bookings\n", user, 3))
@@ -98,11 +91,26 @@ func (B *bookingService) LoginUser(c *fiber.Ctx) error {
 }
 
 func (B *bookingService) BookTickets(c *fiber.Ctx) error {
+
+	var bookCtrl bookings.BookingsController
 	book := new(models.BookingsRequest)
+
 	if err := c.BodyParser(book); err != nil {
 		return err
 	}
-	return c.Status(fiber.StatusAccepted).JSON(book)
+
+	bookCtrl = bookings.NewBookingController(B.DbInterface)
+	bookid, err := bookCtrl.CreateBooking(book.Username, book.Tickets)
+	if err.Err != nil {
+		return c.Status(err.HttpCode).SendString(err.Err.Error())
+	}
+
+	bookResp := models.BookingsResponse{
+		BookingID:     bookid,
+		Username:      book.Username,
+		TicketsBooked: book.Tickets,
+	}
+	return c.Status(fiber.StatusAccepted).JSON(bookResp)
 }
 
 func (B *bookingService) DeleteBooking(c *fiber.Ctx) error {
@@ -123,9 +131,6 @@ func (B *bookingService) StartBookingService() {
 	userGroup := B.app.Group("/user")
 	userGroup.Post("/signup", B.CreateUser)
 	userGroup.Post("/signin", B.LoginUser)
-
-	ticketGroup := B.app.Group("/tickets")
-	ticketGroup.Get("", B.GetTickets)
 
 	bookingGroup := B.app.Group("/bookings")
 	bookingGroup.Get("", B.GetBookings)

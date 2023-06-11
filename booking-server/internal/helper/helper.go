@@ -42,6 +42,11 @@ func ErrorMatch(err error) MyHTTPErrors {
 			Err:      fmt.Errorf("password wrong"),
 			HttpCode: fiber.StatusForbidden,
 		}
+	} else if strings.Contains(err.Error(), "FOREIGN KEY") {
+		return MyHTTPErrors{
+			Err:      fmt.Errorf("user not found"),
+			HttpCode: fiber.StatusForbidden,
+		}
 	} else {
 		return MyHTTPErrors{
 			Err:      fmt.Errorf("internal server error"),

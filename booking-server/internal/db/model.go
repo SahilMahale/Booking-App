@@ -7,8 +7,8 @@ type User struct {
 }
 
 type Bookings struct {
-	BookingID   string `gorm:"primaryKey"`
-	Usernameref string
-	Tickets     uint
-	User        User `gorm:"foreignKey:Usernameref"`
+	BookingID     string `gorm:"primaryKey"`
+	User          User   `gorm:"foreignKey:UsernameRefer"`
+	UsernameRefer string
+	Tickets       uint
 }
