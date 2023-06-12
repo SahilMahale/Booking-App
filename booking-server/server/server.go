@@ -1,10 +1,9 @@
 package server
 
 import (
-	"fmt"
-
 	"github.com/SahilMahale/Booking-App/booking-server/internal/bookings"
 	"github.com/SahilMahale/Booking-App/booking-server/internal/db"
+	"github.com/SahilMahale/Booking-App/booking-server/internal/helper"
 	"github.com/SahilMahale/Booking-App/booking-server/internal/user"
 	"github.com/SahilMahale/Booking-App/booking-server/server/models"
 
@@ -52,10 +51,30 @@ func (B *bookingService) initLogger() {
 }
 
 func (B *bookingService) GetBookings(c *fiber.Ctx) error {
-	if user := c.Query("user"); user != "" {
-		return c.SendString(fmt.Sprintf("%s has %d bookings\n", user, 3))
+
+	var user string
+	var bookarr []db.Bookings
+	var err helper.MyHTTPErrors
+	bookCtrl := bookings.NewBookingController(B.DbInterface)
+
+	if user = c.Query("user"); user == "" {
+		bookarr, err = bookCtrl.GetBookings()
+	} else {
+		bookarr, err = bookCtrl.GetBookingsForUser(user)
 	}
-	return c.SendString("will return all the bookings")
+	if err.Err != nil {
+		return c.Status(err.HttpCode).SendString(err.Err.Error())
+	}
+	bookRespArr := []models.BookingsResponse{}
+	for _, book := range bookarr {
+		bookEntry := models.BookingsResponse{
+			BookingID:     book.BookingID,
+			Username:      book.UsernameRefer,
+			TicketsBooked: book.Tickets,
+		}
+		bookRespArr = append(bookRespArr, bookEntry)
+	}
+	return c.JSON(bookRespArr)
 }
 
 func (B *bookingService) CreateUser(c *fiber.Ctx) error {
@@ -114,10 +133,19 @@ func (B *bookingService) BookTickets(c *fiber.Ctx) error {
 }
 
 func (B *bookingService) DeleteBooking(c *fiber.Ctx) error {
-	if bookID := c.Params("bookid"); bookID != "" {
-		return c.SendString(fmt.Sprintf("%s booking is delete\n", bookID))
+
+	bookID := ""
+	if bookID = c.Params("bookid"); bookID == "" {
+		return c.Status(fiber.ErrBadRequest.Code).SendString("Need to specify bookingId")
 	}
-	return c.Status(fiber.StatusBadRequest).SendString("Need the bookingID")
+
+	bookCtrl := bookings.NewBookingController(B.DbInterface)
+	err := bookCtrl.DeleteBooking(bookID)
+
+	if err.Err != nil {
+		return c.Status(err.HttpCode).SendString(err.Err.Error())
+	}
+	return c.Status(fiber.StatusOK).SendString("booking deleted")
 }
 
 func (B *bookingService) StartBookingService() {

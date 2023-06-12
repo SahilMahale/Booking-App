@@ -47,13 +47,9 @@ func (u UserDataController) CreateUser(username, email, pass string) helper.MyHT
 
 func (u UserDataController) LoginUser(username, pass string) helper.MyHTTPErrors {
 
-	res := u.DbInterface.Db.First(&db.User{Username: username})
+	user := db.User{Username: username}
+	res := u.DbInterface.Db.First(&user)
 	if res.Error != nil {
-		myerr := helper.ErrorMatch(res.Error)
-		return myerr
-	}
-	var user db.User
-	if err := res.Scan(&user); err.Error != nil {
 		myerr := helper.ErrorMatch(res.Error)
 		return myerr
 	}

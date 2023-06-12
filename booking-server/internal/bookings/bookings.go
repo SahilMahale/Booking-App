@@ -1,6 +1,8 @@
 package bookings
 
 import (
+	"fmt"
+
 	"github.com/SahilMahale/Booking-App/booking-server/internal/db"
 	"github.com/SahilMahale/Booking-App/booking-server/internal/helper"
 	"github.com/google/uuid"
@@ -13,7 +15,8 @@ type BookingsController struct {
 type BookingsOps interface {
 	CreateBooking(username string, tickets uint) (string, helper.MyHTTPErrors)
 	DeleteBooking(bookingID string) helper.MyHTTPErrors
-	GetBooking(username string) helper.MyHTTPErrors
+	GetBookings() ([]db.Bookings, helper.MyHTTPErrors)
+	GetBookingsForUser(username string) ([]db.Bookings, helper.MyHTTPErrors)
 }
 
 func NewBookingController(db db.DbConnection) BookingsController {
@@ -40,13 +43,53 @@ func (b BookingsController) CreateBooking(username string, tickets uint) (string
 }
 
 func (b BookingsController) DeleteBooking(bookingID string) helper.MyHTTPErrors {
+
+	booking := db.Bookings{BookingID: bookingID}
+	//check if entry is present
+	err := b.DbInterface.Db.First(&booking)
+
+	if err.Error != nil {
+		myerr := helper.ErrorMatch(err.Error)
+		return myerr
+	}
+
+	err = b.DbInterface.Db.Delete(&booking)
+
+	if err.Error != nil {
+		myerr := helper.ErrorMatch(err.Error)
+		return myerr
+	}
+
 	return helper.MyHTTPErrors{
 		Err: nil,
 	}
 }
 
-func (b BookingsController) GetBooking(username string) helper.MyHTTPErrors {
-	return helper.MyHTTPErrors{
+func (b BookingsController) GetBookings() ([]db.Bookings, helper.MyHTTPErrors) {
+	var book []db.Bookings
+
+	res := b.DbInterface.Db.Find(&book)
+	if res.Error != nil {
+		myerr := helper.ErrorMatch(res.Error)
+		return []db.Bookings{}, myerr
+	}
+
+	return book, helper.MyHTTPErrors{
+		Err: nil,
+	}
+}
+
+func (b BookingsController) GetBookingsForUser(username string) ([]db.Bookings, helper.MyHTTPErrors) {
+	var book []db.Bookings
+
+	res := b.DbInterface.Db.Where(&db.Bookings{UsernameRefer: username}).Find(&book)
+	if res.Error != nil {
+		fmt.Println("sasas")
+		myerr := helper.ErrorMatch(res.Error)
+		return []db.Bookings{}, myerr
+	}
+
+	return book, helper.MyHTTPErrors{
 		Err: nil,
 	}
 }
