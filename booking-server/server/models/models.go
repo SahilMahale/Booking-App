@@ -20,8 +20,9 @@ type TicketsResponse struct {
 }
 
 type BookingsResponse struct {
-	BookingID     string
-	TicketsBooked uint
+	BookingID     string `json:"bookingID" xml:"bookingID" form:"bookingID"`
+	Username      string `json:"user" xml:"user" form:"user"`
+	TicketsBooked uint   `json:"tickets" xml:"tickets" form:"tickets"`
 }
 
 type BookingsRequest struct {

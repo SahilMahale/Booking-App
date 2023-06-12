@@ -1,73 +1,70 @@
 package user
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
-	"sync"
+
+	"github.com/SahilMahale/Booking-App/booking-server/internal/db"
+	"github.com/SahilMahale/Booking-App/booking-server/internal/helper"
+	"github.com/gofiber/fiber/v2"
+	"golang.org/x/crypto/bcrypt"
 )
 
-type UserData struct {
-	Username      string `gorm:"primaryKey"`
-	Email         string
-	BookedTickets uint
-	Pass          string
+type UserDataController struct {
+	DbInterface db.DbConnection
 }
 
-var reader = bufio.NewReader(os.Stdin)
-
-func NewUser() UserData {
-	return UserData{}
+type UserOps interface {
+	CreateUser(username, email, pass string) helper.MyHTTPErrors
+	DeleteUser(username, pass string) helper.MyHTTPErrors
+	LoginUser(username, pass string) helper.MyHTTPErrors
 }
-func (u *UserData) ReadUserInfo() {
-	var err error
-	fmt.Printf("Please type your user name: ")
-	u.Username, err = reader.ReadString('\n')
-	if err != nil {
-		fmt.Printf("Error while reading input: %+v\n", err)
-		return
-	}
 
-	fmt.Printf("Please type your email address: ")
-	u.Email, err = reader.ReadString('\n')
-	if err != nil {
-		fmt.Printf("Error while reading input: %+v\n", err)
-		return
+func NewUserController(db db.DbConnection) UserDataController {
+	return UserDataController{
+		DbInterface: db,
 	}
 }
 
-func (u *UserData) ReadBooking() {
-	fmt.Printf("Please enter the number of tickets to be booked: ")
-	bookedTickets, err := reader.ReadString('\n')
+func (u UserDataController) CreateUser(username, email, pass string) helper.MyHTTPErrors {
+
+	hashPass, err := bcrypt.GenerateFromPassword([]byte(pass), 10)
 	if err != nil {
-		fmt.Printf("Error while reading input: %+v\n", err)
-		return
+		return helper.MyHTTPErrors{
+			Err:      fmt.Errorf("internal error while creating Hash"),
+			HttpCode: fiber.StatusInternalServerError,
+		}
 	}
-	bookedTickets64, err := strconv.ParseUint(strings.TrimSpace(bookedTickets), 10, 64)
-	if err != nil {
-		fmt.Printf("Error while reading input: %+v\n", err)
-		return
+	user := db.User{Username: username, Email: email, Pass: string(hashPass)}
+
+	if err := u.DbInterface.Db.Create(user); err.Error != nil {
+		myerr := helper.ErrorMatch(err.Error)
+		return myerr
 	}
-	u.BookedTickets = uint(bookedTickets64)
+	return helper.MyHTTPErrors{
+		Err: nil,
+	}
 }
 
-func (u UserData) BookTicket(bookings *[]UserData, remainingTickets *uint, totalTickets uint) {
-	*bookings = append(*bookings, u)
-	*remainingTickets -= u.BookedTickets
+func (u UserDataController) LoginUser(username, pass string) helper.MyHTTPErrors {
 
-	fmt.Printf("Thank you for booking %d tickets, %d tickets left out of %d \n",
-		u.BookedTickets, *remainingTickets, totalTickets)
-	// fmt.Printf("UserInfo %v", userData)
-	fmt.Printf("These are all the bookings till now %v\n", *bookings)
+	user := db.User{Username: username}
+	res := u.DbInterface.Db.First(&user)
+	if res.Error != nil {
+		myerr := helper.ErrorMatch(res.Error)
+		return myerr
+	}
+	err := bcrypt.CompareHashAndPassword([]byte(user.Pass), []byte(pass))
+	if err != nil {
+		myerr := helper.ErrorMatch(err)
+		return myerr
+	}
+	return helper.MyHTTPErrors{
+		Err: nil,
+	}
 }
 
-func (u UserData) SendTicket(wg *sync.WaitGroup) {
-	ticket := fmt.Sprintf("Sending ticket:\n %d tickets for %s \n to Email: %s\n", u.BookedTickets, u.Username, u.Email)
-	data := []byte(ticket)
-	fileName := "Ticket" + u.Username + ".txt"
-	os.WriteFile(fileName, data, 0644)
-	// fmt.Printf("Ticket Created for username:%s", u.Username)
-	wg.Done()
+func (u UserDataController) DeleteUser(username, pass string) helper.MyHTTPErrors {
+	return helper.MyHTTPErrors{
+		Err: nil,
+	}
 }
