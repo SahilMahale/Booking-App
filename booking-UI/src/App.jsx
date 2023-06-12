@@ -16,7 +16,7 @@ function App() {
         </p>
       </div>
       <p className="read-the-docs">
-        Lot to be done, its gonna kick my ass
+        Lot to be done, its gonna kick my ass man!
       </p>
     </>
   )
