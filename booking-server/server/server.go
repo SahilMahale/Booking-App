@@ -8,6 +8,7 @@ import (
 	"github.com/SahilMahale/Booking-App/booking-server/server/models"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 )
@@ -41,12 +42,16 @@ func NewBookingService(appname, ip string, totalTickets uint, db db.DbConnection
 	}
 }
 
-func (B *bookingService) initLogger() {
+func (B *bookingService) initMiddleware() {
 	// Adding logger to the app
 	B.app.Use(requestid.New())
 	B.app.Use(logger.New(logger.Config{
 		// For more options, see the Config section
 		Format: "${pid} ${locals:requestid} ${status} - ${method} ${path}\n",
+	}))
+	B.app.Use(cors.New(cors.Config{
+		AllowOrigins: "http://localhost:3000",
+		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 }
 
@@ -150,7 +155,7 @@ func (B *bookingService) DeleteBooking(c *fiber.Ctx) error {
 
 func (B *bookingService) StartBookingService() {
 
-	B.initLogger()
+	B.initMiddleware()
 
 	B.app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Booking APP!")
