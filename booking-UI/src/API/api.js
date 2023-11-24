@@ -15,4 +15,6 @@ const getBookingsList = async ()=> {
     return data
 
 }
+
+
 export  {getBookingsList}
