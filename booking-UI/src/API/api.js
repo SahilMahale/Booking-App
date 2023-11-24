@@ -5,8 +5,19 @@ const getBookingsList = async ()=> {
     const resp = await axios.get(`http://localhost:8080/bookings`,{
         headers:{
             "Content-Type":'application/type',
-            // "Access-Control-Allow-Origin": "*",
-            // "Access-Control-Allow-Headers": "X-Requested-With"
+        }
+    }).then(Response=>{
+        data = Response.data
+    })
+
+    return data
+
+}
+const getUsersList = async ()=> {
+    let data
+    const resp = await axios.get(`http://localhost:8080/user/info`,{
+        headers:{
+            "Content-Type":'application/type',
         }
     }).then(Response=>{
         data = Response.data
@@ -17,4 +28,5 @@ const getBookingsList = async ()=> {
 }
 
 
-export  {getBookingsList}
+
+export  {getBookingsList,getUsersList}

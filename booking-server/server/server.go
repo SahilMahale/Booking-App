@@ -26,6 +26,7 @@ type BookingServicer interface {
 	DeleteBooking(c *fiber.Ctx) error
 	CreateUser(c *fiber.Ctx) error
 	LoginUser(c *fiber.Ctx) error
+	GetAllUsers(c *fiber.Ctx) error
 	StartBookingService()
 }
 
@@ -114,6 +115,15 @@ func (B *bookingService) LoginUser(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusAccepted)
 }
 
+func (B *bookingService) GetAllUsers(c *fiber.Ctx) error {
+	userCtrl := user.NewUserController(B.DbInterface)
+	usersList, err := userCtrl.GetAllUsers()
+	if err.Err != nil {
+		return c.Status(err.HttpCode).SendString(err.Err.Error())
+	}
+	return c.Status(fiber.StatusAccepted).JSON(usersList)
+}
+
 func (B *bookingService) BookTickets(c *fiber.Ctx) error {
 
 	var bookCtrl bookings.BookingsController
@@ -164,6 +174,7 @@ func (B *bookingService) StartBookingService() {
 	userGroup := B.app.Group("/user")
 	userGroup.Post("/signup", B.CreateUser)
 	userGroup.Post("/signin", B.LoginUser)
+	userGroup.Get("/info", B.GetAllUsers)
 
 	bookingGroup := B.app.Group("/bookings")
 	bookingGroup.Get("", B.GetBookings)
