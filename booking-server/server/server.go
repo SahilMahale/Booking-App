@@ -26,6 +26,8 @@ type BookingServicer interface {
 	DeleteBooking(c *fiber.Ctx) error
 	CreateUser(c *fiber.Ctx) error
 	LoginUser(c *fiber.Ctx) error
+	CreateAdmin(c *fiber.Ctx) error
+	LoginAdmin(c *fiber.Ctx) error
 	GetAllUsers(c *fiber.Ctx) error
 	StartBookingService()
 }
@@ -115,6 +117,38 @@ func (B *bookingService) LoginUser(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusAccepted)
 }
 
+func (B *bookingService) CreateAdmin(c *fiber.Ctx) error {
+	var userCtrl user.UserOps
+	u := new(models.AdminSignup)
+
+	if err := c.BodyParser(u); err != nil {
+		return err
+	}
+
+	userCtrl = user.NewUserController(B.DbInterface)
+
+	err := userCtrl.CreateAdmin(u.Username, u.Password)
+	if err.Err != nil {
+		return c.Status(err.HttpCode).SendString(err.Err.Error())
+	}
+
+	return c.SendStatus(fiber.StatusCreated)
+}
+
+func (B *bookingService) LoginAdmin(c *fiber.Ctx) error {
+	var userCtrl user.UserOps
+	u := new(models.UserSignin)
+	if err := c.BodyParser(u); err != nil {
+		return err
+	}
+	userCtrl = user.NewUserController(B.DbInterface)
+	err := userCtrl.LoginAdmin(u.Username, u.Password)
+	if err.Err != nil {
+		return c.Status(err.HttpCode).SendString(err.Err.Error())
+	}
+	return c.SendStatus(fiber.StatusAccepted)
+}
+
 func (B *bookingService) GetAllUsers(c *fiber.Ctx) error {
 	userCtrl := user.NewUserController(B.DbInterface)
 	usersList, err := userCtrl.GetAllUsers()
@@ -175,6 +209,10 @@ func (B *bookingService) StartBookingService() {
 	userGroup.Post("/signup", B.CreateUser)
 	userGroup.Post("/signin", B.LoginUser)
 	userGroup.Get("/info", B.GetAllUsers)
+
+	adminGroup := B.app.Group("/admin")
+	adminGroup.Post("/signup", B.CreateAdmin)
+	adminGroup.Post("/signin", B.LoginAdmin)
 
 	bookingGroup := B.app.Group("/bookings")
 	bookingGroup.Get("", B.GetBookings)

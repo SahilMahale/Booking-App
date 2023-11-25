@@ -12,3 +12,8 @@ type Bookings struct {
 	UsernameRefer string
 	Tickets       uint
 }
+
+type Admins struct {
+	Name string `gorm:"primaryKey;type:varchar(36);"`
+	Pass string
+}
