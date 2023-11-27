@@ -1,29 +1,38 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useResolvedPath, useMatch } from 'react-router-dom';
+
+const AnchorLinks = ({ to, children, isTitle, ...props }) => {
+  const resPath = useResolvedPath(to);
+  const isActive = useMatch({ path: resPath.pathname, end: true });
+  return (
+    <Link
+      to={to}
+      className={`font-sans px-2 py-2.5 rounded-lg ${
+        isTitle ? 'tracking-tighter text-4xl' : 'text-base'
+      }  text-slate-200 text-center font-bold hover:ring-sky-300 hover:ring-4 ${
+        isActive ? 'bg-slate-800' : ''
+      }`}
+      {...props}
+    >
+      {children}
+    </Link>
+  );
+};
 
 const Navbar = ({ children }) => {
   return (
-    <div className="bg-slate-900 mx-auto px-5 py-2.5 min-h-screen ">
+    <div className="bg-slate-950 mx-auto py-2">
       <nav className=" text-gray-200 container mx-auto flex flex-wrap items-center justify-between">
-        <Link
-          to="/"
-          className="font-sans py-2.5 rounded-lg text-slate-200 text-3xl text-center font-bold hover:ring-sky-300 hover:ring-4 "
-        >
+        <AnchorLinks to="/" isTitle={true}>
           Booking APP
-        </Link>
+        </AnchorLinks>
         <div className="px-2">
-          <Link
-            to="/book"
-            className="font-sans px-2 py-2.5 rounded-lg text-slate-200 text-base text-center font-bold hover:ring-sky-300 hover:ring-4 "
-          >
+          <AnchorLinks to="/book" isTitle={false}>
             Book Tickets
-          </Link>
-          <Link
-            to="/users"
-            className="font-sans px-2 py-2.5 rounded-lg text-slate-200 text-base text-center font-bold hover:ring-sky-300 hover:ring-4 "
-          >
+          </AnchorLinks>
+          <AnchorLinks to="/users" isTitle={false}>
             Users
-          </Link>
+          </AnchorLinks>
         </div>
       </nav>
       {children}
