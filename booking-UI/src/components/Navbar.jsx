@@ -21,8 +21,8 @@ const AnchorLinks = ({ to, children, isTitle, ...props }) => {
 
 const Navbar = ({ children }) => {
   return (
-    <div className="bg-slate-950 mx-auto py-2">
-      <nav className=" text-gray-200 container mx-auto flex flex-wrap items-center justify-between">
+    <div className=" bg-slate-900 mx-auto py-2">
+      <nav className=" bg-slate-950 rounded-lg text-gray-200 container mx-auto flex flex-wrap items-center justify-between">
         <AnchorLinks to="/" isTitle={true}>
           Booking APP
         </AnchorLinks>
