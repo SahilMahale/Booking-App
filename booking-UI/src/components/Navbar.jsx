@@ -30,6 +30,9 @@ const Navbar = ({ children }) => {
           <AnchorLinks to="/book" isTitle={false}>
             Book Tickets
           </AnchorLinks>
+          {/* <AnchorLinks to="/bookings" isTitle={false}>
+            Bookings
+          </AnchorLinks> */}
           <AnchorLinks to="/users" isTitle={false}>
             Users
           </AnchorLinks>

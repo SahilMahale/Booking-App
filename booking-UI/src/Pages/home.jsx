@@ -15,7 +15,7 @@ const useGetBookingList = () => {
   });
   return resp;
 };
-const Root = () => {
+const Home = () => {
   const { data, isError, isLoading, isSuccess } = useGetBookingList();
   return (
     <div className="bg-slate-900 min-h-screen py-2 px-2">
@@ -24,7 +24,7 @@ const Root = () => {
         {!isError && isSuccess && (
           <>
             <h2 className="font-sans py-1 text-slate-200 text-2xl text-center font-bold">
-              Current Booking
+              Current Bookings
             </h2>
             <BookingList data={data} />
           </>
@@ -34,4 +34,4 @@ const Root = () => {
   );
 };
 
-export default Root;
+export default Home;

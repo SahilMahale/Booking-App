@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Root, Book, Users } from './Pages';
+import { Home, Book, Users, Login } from './Pages';
 import './index.css';
 import Navbar from './components/Navbar';
 
@@ -13,7 +13,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Root />,
+        element: <Home />,
       },
       {
         path: '/book',
@@ -22,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: '/users',
         element: <Users />,
+      },
+      {
+        path: '/login',
+        element: <Login />,
       },
     ],
   },
