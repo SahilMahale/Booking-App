@@ -37,6 +37,17 @@ func ErrorMatch(err error) MyHTTPErrors {
 			Err:      fmt.Errorf("entry doesn't exist"),
 			HttpCode: fiber.StatusForbidden,
 		}
+	} else if strings.Contains(err.Error(), "Duplicate entry") {
+		if strings.Contains(err.Error(), "for key 'users.PRIMARY'") {
+			return MyHTTPErrors{
+				Err:      fmt.Errorf("username already exists"),
+				HttpCode: fiber.StatusBadRequest,
+			}
+		}
+		return MyHTTPErrors{
+			Err:      fmt.Errorf("entry already exists"),
+			HttpCode: fiber.StatusBadRequest,
+		}
 	} else if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 		return MyHTTPErrors{
 			Err:      fmt.Errorf("password wrong"),
