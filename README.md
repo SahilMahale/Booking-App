@@ -14,20 +14,24 @@ mainly to practice DB connection with gorm, implement auth from scratch and to l
     * vite [bundler/dev server](https://vitejs.dev/guide/why.html)
     * react
 ### Starting database
-Execute the following to get the administrator credentials:
+helm repo add bitnami https://charts.bitnami.com/bitnami 
 
+helm install my-release bitnami/mysql    
+
+Execute the following to get the administrator credentials:
+ 
   echo Username: root
-  MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace default mysqlk3s -o jsonpath="{.data.mysql-root-password}" | base64 -d)
+  MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace default my-release -o jsonpath="{.data.mysql-root-password}" | base64 -d)
 
 To connect to your database:
 
   1. Run a pod that you can use as a client:
 
-      kubectl run mysqlk3s-client --rm --tty -i --restart='Never' --image  docker.io/bitnami/mysql:8.0.33-debian-11-r7 --namespace default --env MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD --command -- bash
+      kubectl run my-release-client --rm --tty -i --restart='Never' --image  docker.io/bitnami/mysql:8.0.33-debian-11-r7 --namespace default --env MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD --command -- bash
 
   2. To connect to primary service (read/write):
 
-      mysql -h mysqlk3s.default.svc.cluster.local -uroot -p"$MYSQL_ROOT_PASSWORD"
+      mysql -h my-release.default.svc.cluster.local -uroot -p"$MYSQL_ROOT_PASSWORD"
 ### Database ENV variables 
 ```bash
 export MYSQL_USERNAME=<dbuser>

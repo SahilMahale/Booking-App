@@ -50,7 +50,53 @@ const putBookings = async (user, tickets) => {
 
   return data;
 };
-const userLogin = async (user, pass) => {
+const userSignup = async (user,email,pass) => {
+    let data;
+    const resp = await axios
+      .post(
+        `http://localhost:8080/user/signup`,
+        {
+          user: user,
+          email:email,
+          pass: pass,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((Response) => {
+        data = Response.data;
+      });
+  
+    return data;
+  };
+
+  const adminSignup = async (user,email,pass) => {
+    let data;
+    const resp = await axios
+      .post(
+        `http://localhost:8080/admin/signup`,
+        {
+          user: user,
+          email:email,
+          pass: pass,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((Response) => {
+        data = Response.data;
+      });
+  
+    return data;
+  };
+
+  const userLogin = async (user, pass) => {
     let data;
     const resp = await axios
       .post(
@@ -71,5 +117,27 @@ const userLogin = async (user, pass) => {
   
     return data;
   };
+
+  const adminLogin = async (user, pass) => {
+    let data;
+    const resp = await axios
+      .post(
+        `http://localhost:8080/admin/signin`,
+        {
+          user: user,
+          pass: pass,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((Response) => {
+        data = Response.data;
+      });
   
-export { getBookingsList, getUsersList, putBookings,userLogin };
+    return data;
+  };
+  
+export { getBookingsList, getUsersList, putBookings,userLogin,adminLogin,userSignup,adminSignup };
