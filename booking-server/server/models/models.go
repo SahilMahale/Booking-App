@@ -9,6 +9,7 @@ type UserSignup struct {
 	Username string `json:"user" xml:"user" form:"user"`
 	Email    string `json:"email" xml:"email" form:"email"`
 	Password string `json:"pass" xml:"pass" form:"pass"`
+	IsAdmin  bool   `json:"isadmin" xml:"isadmin" form:"isadmin"`
 }
 type UserSignin struct {
 	Username string `json:"user" xml:"user" form:"user"`
