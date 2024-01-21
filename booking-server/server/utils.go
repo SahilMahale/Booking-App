@@ -4,7 +4,6 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"fmt"
 	"os"
 	"strings"
 	"time"
@@ -106,13 +105,11 @@ func makeTokenWithClaims(checkIfAdmin bool, username string) (token string, err 
 
 func getClaimsForThisCall(token string) (claims *MyCustomClaims, err error) {
 	claims = &MyCustomClaims{}
-	tkp, err := jwt.ParseWithClaims(token, claims, func(t *jwt.Token) (interface{}, error) {
+	_, err = jwt.ParseWithClaims(token, claims, func(t *jwt.Token) (interface{}, error) {
 		return publicKey, nil
 	})
 	if err != nil {
 		return nil, err
 	}
-	cl := tkp.Claims.(*MyCustomClaims)
-	fmt.Printf("%+v\n", cl)
 	return claims, nil
 }

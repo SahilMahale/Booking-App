@@ -1,11 +1,15 @@
 import axios from 'axios';
-
-const getBookingsList = async () => {
+const getBookingsList = async ({ queryKey }) => {
+  const [_, authKey, user] = queryKey;
   let data;
   const resp = await axios
     .get(`http://localhost:8080/bookings`, {
       headers: {
         'Content-Type': 'application/type',
+        Authorization: 'Bearer ' + authKey,
+      },
+      params: {
+        user,
       },
     })
     .then((Response) => {
@@ -29,7 +33,7 @@ const getUsersList = async () => {
   return data;
 };
 
-const putBookings = async (user, tickets) => {
+const putBookings = async (user, tickets, authKey) => {
   let data;
   const resp = await axios
     .post(
@@ -37,6 +41,30 @@ const putBookings = async (user, tickets) => {
       {
         user: user,
         tickets: tickets,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + authKey,
+        },
+      }
+    )
+    .then((Response) => {
+      data = Response.data;
+    });
+
+  return data;
+};
+const userSignup = async (user, email, pass, isadmin) => {
+  let data;
+  const resp = await axios
+    .post(
+      `http://localhost:8080/user/signup`,
+      {
+        user: user,
+        email: email,
+        pass: pass,
+        isadmin: isadmin,
       },
       {
         headers: {
@@ -50,94 +78,28 @@ const putBookings = async (user, tickets) => {
 
   return data;
 };
-const userSignup = async (user,email,pass) => {
-    let data;
-    const resp = await axios
-      .post(
-        `http://localhost:8080/user/signup`,
-        {
-          user: user,
-          email:email,
-          pass: pass,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      .then((Response) => {
-        data = Response.data;
-      });
-  
-    return data;
-  };
 
-  const adminSignup = async (user,email,pass) => {
-    let data;
-    const resp = await axios
-      .post(
-        `http://localhost:8080/admin/signup`,
-        {
-          user: user,
-          email:email,
-          pass: pass,
+const userLogin = async (user, pass) => {
+  let data;
+  const resp = await axios
+    .post(
+      `http://localhost:8080/user/signin`,
+      {
+        user: user,
+        pass: pass,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
         },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      .then((Response) => {
-        data = Response.data;
-      });
-  
-    return data;
-  };
+      }
+    )
+    .then((Response) => {
+      // console.log(Response.data)
+      data = Response.data;
+    });
 
-  const userLogin = async (user, pass) => {
-    let data;
-    const resp = await axios
-      .post(
-        `http://localhost:8080/user/signin`,
-        {
-          user: user,
-          pass: pass,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      .then((Response) => {
-        data = Response.data;
-      });
-  
-    return data;
-  };
+  return data;
+};
 
-  const adminLogin = async (user, pass) => {
-    let data;
-    const resp = await axios
-      .post(
-        `http://localhost:8080/admin/signin`,
-        {
-          user: user,
-          pass: pass,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      .then((Response) => {
-        data = Response.data;
-      });
-  
-    return data;
-  };
-  
-export { getBookingsList, getUsersList, putBookings,userLogin,adminLogin,userSignup,adminSignup };
+export { getBookingsList, getUsersList, putBookings, userLogin, userSignup };

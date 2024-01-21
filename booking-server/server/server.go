@@ -70,7 +70,7 @@ func (B *bookingService) initMiddleware() {
 	B.app.Use(recover.New(recover.Config{EnableStackTrace: true}))
 	B.app.Use(cors.New(cors.Config{
 		AllowOrigins: "http://localhost:3000",
-		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 	}))
 
 }
@@ -173,7 +173,7 @@ func (B *bookingService) LoginUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).SendString(errp.Error())
 	}
 
-	return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"auth-token": atoken})
+	return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"auth_token": atoken})
 }
 
 func (B *bookingService) GetAllUsers(c *fiber.Ctx) error {

@@ -1,24 +1,20 @@
-import React, { useState } from 'react';
-import { Formik } from 'formik';
-import {
-  putBookings,
-  userLogin,
-  adminLogin,
-  userSignup,
-  adminSignup,
-} from '../API/api';
 import { useMutation } from '@tanstack/react-query';
+import { Formik } from 'formik';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { putBookings, userLogin, userSignup } from '../API/api';
+import { useAuth } from '../Context/AuthContext';
 import Loading from './Loading';
 
 const TicketForm = () => {
   const navigateTO = useNavigate();
+  const { appContext } = useAuth();
   const { mutate, isPending, isPaused, isError, error } = useMutation({
     mutationFn: ({ user, tickets }) => {
-      return putBookings(user, tickets);
+      return putBookings(user, tickets, appContext.token);
     },
     onSuccess: () => {
-      navigateTO('/');
+      navigateTO(0);
     },
   });
   return (
@@ -106,14 +102,15 @@ const TicketForm = () => {
 };
 
 const LoginForm = ({ isAdmin = false }) => {
+  const { SetToken } = useAuth();
   const navigateTO = useNavigate();
-  const loginFunc = isAdmin ? adminLogin : userLogin;
   const { mutate, isPending, isPaused, isError, error } = useMutation({
     mutationFn: ({ user, pass }) => {
-      return loginFunc(user, pass);
+      return userLogin(user, pass);
     },
-    onSuccess: () => {
-      navigateTO('/');
+    onSuccess: (data) => {
+      SetToken(data?.auth_token);
+      // navigateTO('/');
     },
   });
   return (
@@ -212,10 +209,9 @@ const LoginForm = ({ isAdmin = false }) => {
 
 const SignupForm = ({ isAdmin = false }) => {
   const navigateTO = useNavigate();
-  const signupFunc = isAdmin ? adminSignup : userSignup;
   const { mutate, isPending, isPaused, isError, error } = useMutation({
     mutationFn: ({ user, email, pass }) => {
-      return signupFunc(user, email, pass);
+      return userSignup(user, email, pass, isAdmin);
     },
     onSuccess: () => {
       navigateTO('/users');
@@ -331,4 +327,4 @@ const SignupForm = ({ isAdmin = false }) => {
   );
 };
 
-export { LoginForm, TicketForm, SignupForm };
+export { LoginForm, SignupForm, TicketForm };

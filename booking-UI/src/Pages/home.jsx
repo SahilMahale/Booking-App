@@ -1,12 +1,14 @@
-import React from 'react';
-import BookingList from '../components/BookingList';
-import { getBookingsList } from '../API/api';
-import Loading from '../components/Loading';
 import { useQuery } from '@tanstack/react-query';
+import React from 'react';
+import { getBookingsList } from '../API/api';
+import { useAuth } from '../Context/AuthContext';
+import BookingList from '../components/BookingList';
+import Loading from '../components/Loading';
 
 const useGetBookingList = () => {
+  const { appContext } = useAuth();
   const resp = useQuery({
-    queryKey: ['bookings'],
+    queryKey: ['bookings', appContext.token, appContext.claims.name],
     queryFn: getBookingsList,
     refetchInterval: 10000,
     refetchOnReconnect: true,
