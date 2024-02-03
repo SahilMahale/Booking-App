@@ -23,29 +23,11 @@ const Routes = () => {
     },
     {
       path: '/login',
-      children: [
-        {
-          path: '/login/admin',
-          element: <Login isAdmin={true} />,
-        },
-        {
-          path: '/login/user',
-          element: <Login />,
-        },
-      ],
+      element: <Login />,
     },
     {
       path: '/signup',
-      children: [
-        {
-          path: '/signup/admin',
-          element: <Signup isAdmin={true} />,
-        },
-        {
-          path: '/signup/user',
-          element: <Signup />,
-        },
-      ],
+      element: <Signup />,
     },
   ];
 

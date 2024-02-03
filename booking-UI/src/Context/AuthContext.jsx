@@ -51,14 +51,7 @@ const reducer = (contextState, action) => {
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  // const [authContext, setauthContext] = useState(
-  //   JSON.parse(localStorage.getItem('authard'))
-  // );
-
   const [appContext, dispatch] = useReducer(reducer, initialContext);
-
-  // const loggedin = localStorage.getItem('isLoggedIn') ? 'true' : 'false';
-  // const [isLoggedIn, setisLoggedIn] = useState(loggedin);
 
   const SetToken = (jwtToken) => {
     dispatch({ type: ACTIONS.LOGIN, payload: { token: jwtToken } });
