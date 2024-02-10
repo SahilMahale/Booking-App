@@ -31,10 +31,10 @@ type MyCustomClaims struct {
 }
 
 type bookingService struct {
-	totalTickets uint
 	app          *fiber.App
-	ip           string
 	DbInterface  db.DbConnection
+	ip           string
+	totalTickets uint
 }
 type BookingServicer interface {
 	GetBookings(c *fiber.Ctx) error
@@ -72,7 +72,6 @@ func (B *bookingService) initMiddleware() {
 		AllowOrigins: "http://localhost:3000",
 		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 	}))
-
 }
 
 func (B *bookingService) initAuth() {
@@ -135,7 +134,6 @@ func (B *bookingService) GetBookings(c *fiber.Ctx) error {
 }
 
 func (B *bookingService) CreateUser(c *fiber.Ctx) error {
-
 	var userCtrl user.UserOps
 	u := new(models.UserSignup)
 
@@ -166,7 +164,7 @@ func (B *bookingService) LoginUser(c *fiber.Ctx) error {
 		return c.Status(err.HttpCode).SendString(err.Err.Error())
 	}
 
-	//Create a token based on user
+	// Create a token based on user
 	atoken, errp := makeTokenWithClaims(checkIfAdmin(role), u.Username)
 
 	if errp != nil {
@@ -210,7 +208,7 @@ func (B *bookingService) BookTickets(c *fiber.Ctx) error {
 	if err := c.BodyParser(book); err != nil {
 		return err
 	}
-	if !(book.Username == claims.Name || isAdmin) {
+	if (book.Username != claims.Name) && !isAdmin {
 		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized to book ticket for this user")
 	}
 	bookCtrl = bookings.NewBookingController(B.DbInterface)
@@ -245,7 +243,7 @@ func (B *bookingService) DeleteBooking(c *fiber.Ctx) error {
 	}
 	isAdmin := checkIfAdmin(claims.Type)
 
-	if !(user == claims.Name || isAdmin) {
+	if user != claims.Name && !isAdmin {
 		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized to delete booking for this user")
 	}
 	bookCtrl := bookings.NewBookingController(B.DbInterface)
@@ -259,7 +257,7 @@ func (B *bookingService) DeleteBooking(c *fiber.Ctx) error {
 
 func (B *bookingService) StartBookingService() {
 	B.initMiddleware()
-	//Unauthenticated routes
+	// Unauthenticated routes
 	userGroup := B.app.Group("/user")
 	userGroup.Post("/signup", B.CreateUser)
 	userGroup.Post("/signin", B.LoginUser)
@@ -273,7 +271,7 @@ func (B *bookingService) StartBookingService() {
 	})
 
 	B.initAuth()
-	//authenticated routes
+	// authenticated routes
 	userGroup.Get("/info", B.GetAllUsers)
 	bookingGroup := B.app.Group("/bookings")
 	bookingGroup.Get("", B.GetBookings)
