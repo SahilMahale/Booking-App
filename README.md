@@ -54,6 +54,7 @@ pnpm dev
 
 ### Generating RSA 256 private and public keys
 ```bash
+cd ./secret
 openssl genrsa -out private_key.pem 2048
 openssl rsa -in test_key.pem -outform PEM -pubout -out test_key.pem.pub 
 ```
