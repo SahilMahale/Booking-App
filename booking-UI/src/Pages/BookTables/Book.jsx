@@ -12,7 +12,6 @@ const initialState = {
     tableInfo: undefined,
     tableStatus: TABLESTATES.AVAILABLE
   },
-  bookButtonEnabled: false,
   selectedTables: [],
 };
 let reren = 0;
@@ -32,7 +31,6 @@ function tableReducer(tableState, action) {
     }
     tableState[tableInfo.id].tableStatus = TABLESTATES.SELECTED;
     tableState.selectedTables?.push(tableInfo.id)
-    tableState.bookButtonEnabled = true;
     /*react doesn't rerender for same object with mutation,
      * it needs a new object like a babyi */
     return { ...tableState }
@@ -44,12 +42,11 @@ function tableReducer(tableState, action) {
     tableState.selectedTables = tableState.selectedTables?.filter((elem) => {
       return elem !== tableInfo.id
     })
-    tableState.bookButtonEnabled = false;
     return { ...tableState }
   } else if (action.type === ACTIONS.BOOK) {
+    //change to use selectedTables array
     if (tableState[tableInfo.id].tableStatus === TABLESTATES.SELECTED) {
       tableState[tableInfo.id].tableStatus = BookTable();
-      tableState.bookButtonEnabled = false;
       return { ...tableState }
     }
     return { ...tableState }
@@ -96,17 +93,13 @@ function Book() {
         <div className='flex flex-col'>
           <div className=' mt-50 lg:grid lg:grid-cols-5 gap-5 md:flex md:flex-col'>
             {cardInfo && (cardInfo.tables.map((table) => {
-              // const contextValue = [tablesStates, dispatchTables]
-              //         console.log(contextValue, tablesStates)
               return (
-                // <BookingContextProvider contextValue={contextValue}>
                 <TableCard key={table.id} tableInfo={table} state={tablesStates[table.id]} dispatcherFunc={dispatchTables} />
-                //</BookingContextProvider>
               )
             }))}
           </div>
           <div className='p-4 flex flex-row justify-end'>
-            <Button variant='gradient' className={` ${tablesStates.bookButtonEnabled ? "bg-cyan-400" : "bg-gray-500"}  text-slate-200 rounded-full w-24  drop-shadow-2xl`}>
+            <Button variant='gradient' className={` ${(tablesStates.selectedTables?.length > 0) ? "bg-cyan-400" : "bg-gray-500"}  text-slate-200 rounded-full w-24  drop-shadow-2xl`}>
               <img src={icon} />
             </Button>
           </div>
