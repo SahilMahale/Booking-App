@@ -1,4 +1,4 @@
-import Book from "./Book";
+import Book from "./BookTables/Book";
 import Landing from "./Landing";
 import Login from "./Login/Login";
 import Signup from "./SignUp/Signup";
