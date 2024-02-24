@@ -1,12 +1,12 @@
 import React, { useReducer } from 'react';
 import { Button } from '@material-tailwind/react';
-//import { TicketForm } from '../../components/Forms';
 import { TableCard } from './TableCard';
 import icon from './ButtonIcon.svg'
 import { cardInfo } from './mockAPI';
 import { TABLESTATES, ACTIONS } from './constants';
 import { checkAvailable } from './utlis';
 import { useEffect } from 'react';
+
 const initialState = {
   0: {
     tableInfo: undefined,
@@ -17,15 +17,25 @@ const initialState = {
 let reren = 0;
 
 
-const BookTable = () => {
-  return setTimeout(() => { return TABLESTATES.BOOKED }, 5000)
+const BookTable = (bookInfo, selectedTablesArr = []) => {
+  let selectedTablesInfo = new Map()
+  selectedTablesArr.map((tableID) => {
+    selectedTablesInfo.set(tableID, bookInfo[tableID])
+  })
+  let arr = []
+
+  for (const tab of selectedTablesInfo.keys()) {
+    arr.push(tab)
+  }
+  console.log("These tables are booked!", arr)
+  return arr
 }
 // Refactor to match the new hashMap state
 function tableReducer(tableState, action) {
   //console.log("DISPATCHING____________________________________________________")
-  const tableInfo = action.payload.tableInfo;
   if (action.type === ACTIONS.SELECT) {
-    if (!tableInfo.available || !tableState[tableInfo.id]) {
+    const tableInfo = action.payload.tableInfo;
+    if (!tableInfo.available || !tableState[tableInfo.id] || tableState[tableInfo.id].tableStatus === TABLESTATES.BOOKED) {
       alert("Table is already booked or is unavialable")
       return { ...tableState }
     }
@@ -35,6 +45,7 @@ function tableReducer(tableState, action) {
      * it needs a new object like a babyi */
     return { ...tableState }
   } else if (action.type === ACTIONS.DESELECT) {
+    const tableInfo = action.payload.tableInfo;
     if (!tableState[tableInfo.id]) {
       return { ...tableState }
     }
@@ -45,13 +56,22 @@ function tableReducer(tableState, action) {
     return { ...tableState }
   } else if (action.type === ACTIONS.BOOK) {
     //change to use selectedTables array
-    if (tableState[tableInfo.id].tableStatus === TABLESTATES.SELECTED) {
-      tableState[tableInfo.id].tableStatus = BookTable();
+    if (tableState.selectedTables?.length > 0) {
+      const bookedTables = BookTable(tableState, tableState.selectedTables);
+      console.log(typeof bookedTables, bookedTables)
+
+      bookedTables.map((tId) => {
+        // console.log("After fileter:", tableState.selectedTables)
+        tableState[tId].tableStatus = TABLESTATES.BOOKED
+      })
+
+      tableState.selectedTables = []
       return { ...tableState }
     }
-    return { ...tableState }
+    return tableState
   }
   else if (action.type === ACTIONS.LOAD) {
+    const tableInfo = action.payload.tableInfo;
     //console.log("start loading")
     if (tableInfo === undefined) {
       return tableState
@@ -80,11 +100,11 @@ function Book() {
     })
   }, [])
   useEffect(() => {
-    console.log(tablesStates.selectedTables)
+    console.log("Cards selected", tablesStates.selectedTables)
   }, [tablesStates])
   return (
     <div className="bg-slate-900 min-h-screen">
-      <div className="container mx-auto rounded-md bg-slate-700 flex flex-col items-center ">
+      <div className="container mx-auto rounded-md pb-10 bg-slate-700 flex flex-col items-center ">
         <div className='drop-shadow-2xl'>
           < h2 className="font-sans text-slate-200 tracking-tight text-3xl text-center font-bold " >
             Book Tables
@@ -98,9 +118,17 @@ function Book() {
               )
             }))}
           </div>
-          <div className='p-4 flex flex-row justify-end'>
-            <Button variant='gradient' className={` ${(tablesStates.selectedTables?.length > 0) ? "bg-cyan-400" : "bg-gray-500"}  text-slate-200 rounded-full w-24  drop-shadow-2xl`}>
+          <div className='fixed lg:bottom-36 lg:right-44 sm:right-32 right-[1px] p-4 flex'>
+            <Button
+              variant='gradient'
+              about='Button to book selected tables'
+
+              onClick={() => {
+                dispatchTables({ type: ACTIONS.BOOK })
+              }}
+              className={` ${(tablesStates.selectedTables?.length > 0) ? "bg-cyan-400 text-cyan-900" : "bg-gray-500 text-gray-200"}   rounded-full w-24  drop-shadow-2xl font-bold`}>
               <img src={icon} />
+              Book
             </Button>
           </div>
         </div>
