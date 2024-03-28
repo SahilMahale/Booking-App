@@ -1,8 +1,6 @@
 package bookings
 
 import (
-	"fmt"
-
 	"github.com/SahilMahale/Booking-App/booking-server/internal/db"
 	"github.com/SahilMahale/Booking-App/booking-server/internal/helper"
 	"github.com/google/uuid"
@@ -84,7 +82,6 @@ func (b BookingsController) GetBookingsForUser(username string) ([]db.Bookings, 
 
 	res := b.DbInterface.Db.Where(&db.Bookings{UsernameRefer: username}).Find(&book)
 	if res.Error != nil {
-		fmt.Println("sasas")
 		myerr := helper.ErrorMatch(res.Error)
 		return []db.Bookings{}, myerr
 	}

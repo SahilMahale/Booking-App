@@ -1,9 +1,12 @@
 package db
 
+import "github.com/SahilMahale/Booking-App/booking-server/constants"
+
 type User struct {
 	Username string `gorm:"primaryKey;type:varchar(36);"`
 	Email    string
 	Pass     string
+	Role     constants.UserRole `gorm:"type:enum('admin','user')"`
 }
 
 type Bookings struct {
@@ -12,3 +15,8 @@ type Bookings struct {
 	UsernameRefer string
 	Tickets       uint
 }
+
+// type Admins struct {
+// 	Name string `gorm:"primaryKey;type:varchar(36);"`
+// 	Pass string
+// }
