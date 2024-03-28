@@ -8,11 +8,9 @@ const AnchorLinks = ({ to, children, isTitle, ...props }) => {
   return (
     <Link
       to={to}
-      className={`font-sans py-2.5 rounded-lg ${
-        isTitle ? 'tracking-tighter text-4xl px-3' : 'text-base px-5'
-      }  text-slate-200 text-center font-bold hover:ring-sky-300 hover:ring-2 ${
-        isActive ? 'bg-slate-800' : ''
-      }`}
+      className={`font-sans py-2.5 rounded-lg ${isTitle ? 'tracking-tighter text-4xl px-3' : 'text-base px-5'
+        }  text-slate-200 text-center font-bold hover:ring-sky-300 hover:ring-2 ${isActive ? 'bg-slate-800' : ''
+        }`}
       {...props}
     >
       {children}
@@ -45,7 +43,7 @@ const Navbar = ({ children }) => {
           {appContext.isLoggedIn ? (
             <>
               <AnchorLinks to="/book" isTitle={false}>
-                Book Tickets
+                Book Tables
               </AnchorLinks>
               <AnchorLinks to="/users" isTitle={false}>
                 Users
