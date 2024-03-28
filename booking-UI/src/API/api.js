@@ -2,8 +2,16 @@ import axios from 'axios';
 const getBookingsList = async ({ queryKey }) => {
   const [_, authKey, user] = queryKey;
   let data;
+  let API_GATEWAY = process.env.API_GATEWAY
+  let API_PORT = process.env.API_PORT
+  if (API_GATEWAY === "" || API_GATEWAY === "localhost") {
+    API_GATEWAY = "http://localhost"
+  }
+  if (API_PORT === "") {
+    API_PORT === "8080"
+  }
   const resp = await axios
-    .get(`http://localhost:8080/bookings`, {
+    .get(`/api/bookings`, {
       headers: {
         'Content-Type': 'application/type',
         Authorization: 'Bearer ' + authKey,
@@ -21,7 +29,7 @@ const getBookingsList = async ({ queryKey }) => {
 const getUsersList = async () => {
   let data;
   const resp = await axios
-    .get(`http://localhost:8080/user/info`, {
+    .get(`/api/user/info`, {
       headers: {
         'Content-Type': 'application/type',
       },
@@ -37,7 +45,7 @@ const putBookings = async (user, tickets, authKey) => {
   let data;
   const resp = await axios
     .post(
-      `http://localhost:8080/bookings`,
+      `$/api/bookings`,
       {
         user: user,
         tickets: tickets,
@@ -59,7 +67,7 @@ const userSignup = async (user, email, pass, isadmin) => {
   let data;
   const resp = await axios
     .post(
-      `http://localhost:8080/user/signup`,
+      `$/api/user/signup`,
       {
         user: user,
         email: email,
@@ -83,7 +91,7 @@ const userLogin = async (user, pass) => {
   let data;
   const resp = await axios
     .post(
-      `http://localhost:8080/user/signin`,
+      `/api/user/signin`,
       {
         user: user,
         pass: pass,

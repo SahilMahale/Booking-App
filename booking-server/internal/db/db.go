@@ -23,15 +23,15 @@ func NewDBConnection() (DbConnection, error) {
 		panic(fmt.Errorf("one or more ENV variables required for DB connection are not set"))
 	}
 	// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/BookingsDatabase?charset=utf8mb4&parseTime=True&loc=Local", uName, pass, dbIP)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/BookingsDatabase?charset=utf8mb4&parseTime=True&loc=Local", uName, pass, dbIP)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return DbConnection{}, err
 	}
-	//Automigrate and create the tables
+	// Automigrate and create the tables
 	db.AutoMigrate(User{})
 	db.AutoMigrate(Bookings{})
-	db.AutoMigrate(Admins{})
+	// db.AutoMigrate(Admins{})
 	return DbConnection{
 		Db: db,
 	}, nil

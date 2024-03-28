@@ -5,7 +5,8 @@ import icon from './ButtonIcon.svg'
 import { cardInfo } from './mockAPI';
 import { TABLESTATES, ACTIONS } from './constants';
 import { checkAvailable } from './utlis';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useAuth } from '../../Context/AuthContext';
 
 const initialState = {
   0: {
@@ -74,7 +75,7 @@ function tableReducer(tableState, action) {
     const tableInfo = action.payload.tableInfo;
     //console.log("start loading")
     if (tableInfo === undefined) {
-      return tableState
+      return { ...tableState }
     }
     tableState[tableInfo.id] = {
       tableInfo: tableInfo,
@@ -92,8 +93,10 @@ function Book() {
   console.log("Re-Render Book page count:", reren)
   console.log("-----------------------------------------")
   const [tablesStates, dispatchTables] = useReducer(tableReducer, initialState);
+  const { appContext } = useAuth()
+  const userName = appContext.claims.user
   // to avoid too many re-render
-  useEffect(() => {
+  useMemo(() => {
     cardInfo.tables.map((table) => {
       console.log("call load")
       dispatchTables({ type: ACTIONS.LOAD, payload: { tableInfo: table } })

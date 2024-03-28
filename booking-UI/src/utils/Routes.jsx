@@ -3,9 +3,12 @@ import { useAuth } from '../Context/AuthContext';
 import { Book, Home, Landing, Login, Signup, Users } from '../Pages';
 import Navbar from '../components/Navbar';
 import RoutesProtector from './RoutesProtector';
+import { useEffect, useSate } from 'react';
+import { useState } from 'react';
 
 const Routes = () => {
   const { appContext } = useAuth();
+  const [childroutes, setChildRoutes] = useState([])
   const publicRoutes = [
     {
       path: '/service',
@@ -52,15 +55,20 @@ const Routes = () => {
     },
   ];
 
+  useEffect(() => {
+    console.log("Routes created", appContext)
+    const newChildRoutes = [
+      ...publicRoutes,
+      ...(appContext.isLoggedIn ? authenticatedRoutes : unAuthenticatedRoutes),
+    ]
+    console.log("CREATED ROUTES:", childroutes)
+    setChildRoutes([...childroutes, ...newChildRoutes])
+  }, [])
   const router = createBrowserRouter([
     {
       path: '/',
       element: <Navbar />,
-      children: [
-        ...publicRoutes,
-        ...(!appContext.isLoggedIn ? unAuthenticatedRoutes : []),
-        ...authenticatedRoutes,
-      ],
+      children: childroutes,
     },
   ]);
   return <RouterProvider router={router} />;

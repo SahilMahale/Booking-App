@@ -36,7 +36,7 @@ To connect to your database:
 ```bash
 export MYSQL_USERNAME=<dbuser>
 export MYSQL_PASSWORD=<dbpass>
-export MYSQL_IP=<dbIP>
+export MYSQL_IP=<dbIP:port>
 ```
 
 ### Starting backend for dev

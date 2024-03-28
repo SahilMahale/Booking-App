@@ -16,7 +16,7 @@ type Bookings struct {
 	Tickets       uint
 }
 
-type Admins struct {
-	Name string `gorm:"primaryKey;type:varchar(36);"`
-	Pass string
-}
+// type Admins struct {
+// 	Name string `gorm:"primaryKey;type:varchar(36);"`
+// 	Pass string
+// }

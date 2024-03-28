@@ -2,6 +2,8 @@ package server
 
 import (
 	"crypto/rsa"
+	"fmt"
+	"os"
 
 	"github.com/SahilMahale/Booking-App/booking-server/internal/bookings"
 	"github.com/SahilMahale/Booking-App/booking-server/internal/db"
@@ -69,17 +71,24 @@ func (B *bookingService) initMiddleware() {
 	}))
 	B.app.Use(recover.New(recover.Config{EnableStackTrace: true}))
 	B.app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:3000",
+		AllowOrigins: "http://localhost:3000,http://localhost:8080",
 		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 	}))
 }
 
 func (B *bookingService) initAuth() {
-	err := readPrivateKeyFile("/home/sahil/Basics/Go/Booking-App/booking-server/secrets/private_key.pem")
+	secretsFolderPath := os.Getenv("APP_AUTH")
+	if secretsFolderPath == "no-auth" || secretsFolderPath == "" {
+		// run app without jwt auth
+		return
+	}
+	privateKeyPath := fmt.Sprintf("%s/private_key.pem", secretsFolderPath)
+	publicKeyPath := fmt.Sprintf("%s/private_key.pem.pub", secretsFolderPath)
+	err := readPrivateKeyFile(privateKeyPath)
 	if err != nil {
 		panic(err)
 	}
-	err = readPublicKeyFile("/home/sahil/Basics/Go/Booking-App/booking-server/secrets/private_key.pem.pub")
+	err = readPublicKeyFile(publicKeyPath)
 	if err != nil {
 		panic(err)
 	}
