@@ -14,11 +14,14 @@ const enum ACTIONS {
   RECOVER,
   RETURNSTATE
 }
-
+export type JWTclaims = {
+  name: string,
+  type: string
+}
 
 export type Context = {
   isLoggedIn: boolean,
-  claims: object,
+  claims: JWTclaims,
   token: string,
   isRecovered: boolean,
 };
@@ -35,7 +38,7 @@ export type ActionType = {
 
 const initialContext: Context = {
   isLoggedIn: false,
-  claims: {},
+  claims: { name: "", type: "" },
   token: '',
   isRecovered: false,
 }

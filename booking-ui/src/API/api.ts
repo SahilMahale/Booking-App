@@ -1,6 +1,7 @@
+import { QueryFunctionContext } from '@tanstack/react-query';
 import axios from 'axios';
-const getBookingsList = async ({ queryKey }) => {
-  const [_, authKey, user] = queryKey;
+const getBookingsList = async ({ queryKey }: QueryFunctionContext<[string, string, string]>) => {
+  const [, authKey, user] = queryKey;
   let data;
   let API_GATEWAY = process.env.API_GATEWAY
   let API_PORT = process.env.API_PORT
@@ -10,7 +11,7 @@ const getBookingsList = async ({ queryKey }) => {
   if (API_PORT === "") {
     API_PORT = "8080"
   }
-  const resp = await axios
+  await axios
     .get(`/api/bookings`, {
       headers: {
         'Content-Type': 'application/type',
@@ -28,7 +29,7 @@ const getBookingsList = async ({ queryKey }) => {
 };
 const getUsersList = async () => {
   let data;
-  const resp = await axios
+  await axios
     .get(`/api/user/info`, {
       headers: {
         'Content-Type': 'application/type',
@@ -41,9 +42,9 @@ const getUsersList = async () => {
   return data;
 };
 
-const putBookings = async (user, tickets, authKey) => {
+const putBookings = async (user: string, tickets: number, authKey: string) => {
   let data;
-  const resp = await axios
+  await axios
     .post(
       `$/api/bookings`,
       {
@@ -63,9 +64,9 @@ const putBookings = async (user, tickets, authKey) => {
 
   return data;
 };
-const userSignup = async (user, email, pass, isadmin) => {
+const userSignup = async (user: string, email: string, pass: string, isadmin: boolean) => {
   let data;
-  const resp = await axios
+  await axios
     .post(
       `$/api/user/signup`,
       {
@@ -87,9 +88,9 @@ const userSignup = async (user, email, pass, isadmin) => {
   return data;
 };
 
-const userLogin = async (user, pass) => {
+const userLogin = async (user: string, pass: string) => {
   let data;
-  const resp = await axios
+  await axios
     .post(
       `/api/user/signin`,
       {

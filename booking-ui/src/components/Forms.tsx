@@ -8,9 +8,9 @@ import Loading from './Loading';
 
 const TicketForm = () => {
   const navigateTO = useNavigate();
-  const { appContext } = useAuth();
+  const { Context: appContext } = useAuth();
   const { mutate, isPending, isPaused, isError, error } = useMutation({
-    mutationFn: ({ user, tickets }) => {
+    mutationFn: ({ user, tickets }: { user: string, tickets: number }) => {
       return putBookings(user, tickets, appContext.token);
     },
     onSuccess: () => {

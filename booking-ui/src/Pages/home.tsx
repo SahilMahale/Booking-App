@@ -5,7 +5,7 @@ import BookingList from '../components/BookingList';
 import Loading from '../components/Loading';
 
 const useGetBookingList = () => {
-  const { appContext } = useAuth();
+  const { Context: appContext } = useAuth();
   const resp = useQuery({
     queryKey: ['bookings', appContext.token, appContext.claims.name],
     queryFn: getBookingsList,

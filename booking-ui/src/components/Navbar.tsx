@@ -1,8 +1,8 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { Link, Outlet, useMatch, useResolvedPath } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 
-const AnchorLinks = ({ to, children, isTitle, ...props }) => {
+const AnchorLinks = ({ to, children, isTitle, ...props }: { to: string, children: ReactNode, isTitle: boolean }) => {
   const resPath = useResolvedPath(to);
   const isActive = useMatch({ path: resPath.pathname, end: true });
   return (
@@ -18,7 +18,7 @@ const AnchorLinks = ({ to, children, isTitle, ...props }) => {
   );
 };
 
-const LogoutButton = ({ logOutHandler }) => {
+const LogoutButton = ({ logOutHandler }: { logOutHandler: () => void }) => {
   return (
     <button
       className="font-sans px-3 py-2.5 rounded-lg text-base text-amber-200 text-center font-bold 
@@ -31,8 +31,12 @@ const LogoutButton = ({ logOutHandler }) => {
   );
 };
 
-const Navbar = ({ children }) => {
-  const { appContext, LogOut } = useAuth();
+const Navbar = ({ children }: { children: ReactNode }) => {
+  const { Context: appContext, LogOut } = useAuth();
+  if (!LogOut) {
+    console.error("Error: LogOut function not found")
+    return
+  }
   return (
     <div className=" bg-slate-900 mx-auto py-2">
       <nav className=" bg-slate-950 rounded-lg text-gray-200 container mx-auto flex flex-wrap items-center justify-between">
