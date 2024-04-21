@@ -1,5 +1,5 @@
 import React from 'react';
-function Landing({}) {
+function Landing() {
   return (
     <div className="bg-slate-900 min-h-screen py-2 px-2">
       <div className="container mx-auto rounded-md bg-slate-800 flex flex-col items-center ">

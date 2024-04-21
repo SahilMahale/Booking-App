@@ -8,7 +8,7 @@ const getBookingsList = async ({ queryKey }) => {
     API_GATEWAY = "http://localhost"
   }
   if (API_PORT === "") {
-    API_PORT === "8080"
+    API_PORT = "8080"
   }
   const resp = await axios
     .get(`/api/bookings`, {

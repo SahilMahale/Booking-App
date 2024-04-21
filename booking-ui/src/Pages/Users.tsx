@@ -40,7 +40,7 @@ const Users = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((tupl, i) => (
+                  {data.map((tupl, i: number) => (
                     <tr
                       key={i}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
