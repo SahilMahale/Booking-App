@@ -1,8 +1,5 @@
-import React from 'react';
-import { PropTypes } from 'prop-types';
 
-const Table = ({ data, columns }) => {
-  const list = ['a', 'b'];
+const Table = ({ data, columns }: { data: Array<object>, columns: Array<string> }) => {
   return (
     <div className="py-2 relative overflow-x-auto ">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -36,9 +33,5 @@ const Table = ({ data, columns }) => {
   );
 };
 
-Table.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object),
-  columns: PropTypes.array,
-};
 
 export default Table;

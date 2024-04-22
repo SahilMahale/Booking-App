@@ -12,7 +12,7 @@ export default function TableIcon({ status = "Available" }) {
   return (
     <svg className={`${fillColor} stroke-black drop-shadow-xl md:hover:shadow-cyan-400 self-center`}
       xmlns="http://www.w3.org/2000/svg"
-      xml:space="preserve"
+      xmlSpace="preserve"
       width={200}
       height={120}
       viewBox="-50 0 450 320 "

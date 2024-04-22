@@ -3,11 +3,11 @@ import { useAuth } from '../Context/AuthContext';
 import { Book, Home, Landing, Login, Signup, Users } from '../Pages';
 import Navbar from '../components/Navbar';
 import RoutesProtector from './RoutesProtector';
-import { useEffect, useSate } from 'react';
+import { useEffect } from 'react';
 import { useState } from 'react';
 
 const Routes = () => {
-  const { appContext } = useAuth();
+  const { Context: appContext } = useAuth();
   const [childroutes, setChildRoutes] = useState([])
   const publicRoutes = [
     {

@@ -98,7 +98,7 @@ export const LoginForm = ({ isAdmin = false }) => {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 aria-label="adminSVG"
-                xml:space="preserve"
+                xmlSpace="preserve"
                 viewBox="0 0 512.001 512.001"
                 className="h-96 w-96 object-contain fill-slate-700 stroke-slate-800"
               >

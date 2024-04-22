@@ -1,18 +1,32 @@
 import { useMutation } from '@tanstack/react-query';
-import { Formik } from 'formik';
-import React from 'react';
+import { Formik, withFormik, FormikProps, FormikState, FormikHelpers } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { userSignup } from '../../API/api';
+import Loading from '../../components/Loading'
+
+interface FormVals {
+  name: string,
+  email: string,
+  pass: string
+}
 export const SignupForm = ({ isAdmin = false }) => {
   const navigateTO = useNavigate();
   const { mutate, isPending, isPaused, isError, error } = useMutation({
-    mutationFn: ({ user, email, pass }) => {
+    mutationFn: ({ user, email, pass }: { user: string, email: string, pass: string }) => {
       return userSignup(user, email, pass, isAdmin);
     },
     onSuccess: () => {
       navigateTO('/users');
     },
   });
+  const initialValues: FormVals = {
+    name: '',
+    email: '',
+    pass: ''
+  }
+  const handleSubmit = (vals: FormVals) => {
+    mutate({ user: vals.name, email: vals.email, pass: vals.pass });
+  }
   return (
     <>
       {(isPending || isPaused) && (
@@ -23,13 +37,11 @@ export const SignupForm = ({ isAdmin = false }) => {
       {!(isPending || isPaused) && (
         <div className="container mx-auto px-20 py-2 flex flex-wrap items-center justify-between ">
           <Formik
-            initialValues={{ name: 'sahil' }}
-            onSubmit={(vals) => {
-              mutate({ user: vals.name, email: vals.email, pass: vals.pass });
-            }}
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
           >
-            {(props) => (
-              <form className="pl-10" onSubmit={props.handleSubmit}>
+            {(props: FormikState<FormVals>) => (
+              <form className="pl-10" onSubmit={handleSubmit}>
                 <div className=" mb-6 ">
                   <label
                     htmlFor="username"
@@ -108,7 +120,7 @@ export const SignupForm = ({ isAdmin = false }) => {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 aria-label="adminSVG"
-                xml:space="preserve"
+                xmlSpace="preserve"
                 viewBox="0 0 512.001 512.001"
                 className="h-96 w-96 object-contain fill-slate-700 stroke-slate-800"
               >

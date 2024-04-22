@@ -1,5 +1,5 @@
 import { Switch } from '@headlessui/react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { SignupForm } from './SignupForm';
 function Signup({ isAdmin = false }) {
@@ -18,16 +18,14 @@ function Signup({ isAdmin = false }) {
             <Switch
               checked={isAdminToggled}
               onChange={handleAdminToggle}
-              className={`${
-                isAdminToggled ? 'bg-amber-400' : 'bg-slate-200'
-              }  relative inline-flex h-6 w-11 items-center rounded-full`}
+              className={`${isAdminToggled ? 'bg-amber-400' : 'bg-slate-200'
+                }  relative inline-flex h-6 w-11 items-center rounded-full`}
             >
               <span
-                className={`${
-                  isAdminToggled
+                className={`${isAdminToggled
                     ? 'translate-x-6  bg-amber-700'
                     : 'translate-x-1  bg-slate-500'
-                } inline-block h-4 w-4 transform rounded-full  transition-transform`}
+                  } inline-block h-4 w-4 transform rounded-full  transition-transform`}
               />
             </Switch>
           </Switch.Group>

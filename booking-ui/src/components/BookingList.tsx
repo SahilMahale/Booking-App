@@ -1,5 +1,3 @@
-import React from 'react';
-import Loading from './Loading';
 import Table from './Table';
 
 const BookingList = ({ data }) => {
