@@ -87,10 +87,12 @@ const userSignup = async (user: string, email: string, pass: string, isadmin: bo
 
   return data;
 };
-
-const userLogin = async (user: string, pass: string) => {
-  let data;
-  await axios
+type authObj = {
+  auth_token: string
+}
+const userLogin = async (user: string, pass: string): Promise<authObj> => {
+  //let data;
+  const resp = await axios
     .post(
       `/api/user/signin`,
       {
@@ -103,12 +105,12 @@ const userLogin = async (user: string, pass: string) => {
         },
       }
     )
-    .then((Response) => {
+    /* .then((Response) => {
       // console.log(Response.data)
-      data = Response.data;
-    });
+      data = new Promise()
+    }) */;
 
-  return data;
+  return resp.data;
 };
 
 export { getBookingsList, getUsersList, putBookings, userLogin, userSignup };

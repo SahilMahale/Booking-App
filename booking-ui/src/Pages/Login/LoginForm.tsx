@@ -1,20 +1,29 @@
 import { useMutation } from '@tanstack/react-query';
-import { Formik } from 'formik';
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { z } from "zod"
+import { Form } from '@/components/ui/form';
 import { userLogin } from '../../API/api';
 import { useAuth } from '../../Context/AuthContext';
+import Loading from '../../components/Loading';
+
+const LoginFormSchema = z.object({
+  user: z.string().min(4, { message: "User must atleast have 4 characters" })
+})
 
 export const LoginForm = ({ isAdmin = false }) => {
-  const { SetToken } = useAuth();
-  const navigateTO = useNavigate();
+  const { setToken } = useAuth();
+  /* const navigateTO = useNavigate(); */
 
   const { mutate, isPending, isPaused, isError, error } = useMutation({
-    mutationFn: ({ user, pass }) => {
+    mutationFn: ({ user, pass }: { user: string, pass: string }): Promise<{ auth_token: string; }> => {
       return userLogin(user, pass);
     },
-    onSuccess: (data) => {
-      SetToken(data?.auth_token);
+    onSuccess: (data: { auth_token: string }) => {
+      if (!setToken) {
+        alert("Error: setToken function undefined")
+        return
+      }
+      setToken(data.auth_token);
       // navigateTO('/'); setToken does the routing cuz my router setup is ass
     },
   });
@@ -29,8 +38,8 @@ export const LoginForm = ({ isAdmin = false }) => {
       {!(isPending || isPaused) && (
         <div className="container mx-auto px-20 py-2 flex flex-wrap items-center justify-between ">
           <Formik
-            initialValues={{ name: 'sahil' }}
-            onSubmit={(vals) => {
+            initialValues={{ name: 'sahil', pass: '' }}
+            onSubmit={(vals: { name: string, pass: string }) => {
               mutate({ user: vals.name, pass: vals.pass });
             }}
           >

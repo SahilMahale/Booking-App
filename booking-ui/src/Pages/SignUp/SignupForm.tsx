@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { Formik, withFormik, FormikProps, FormikState, FormikHelpers } from 'formik';
+import { Formik, Form, withFormik, FormikProps, FormikState, FormikHelpers } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { userSignup } from '../../API/api';
 import Loading from '../../components/Loading'
@@ -41,7 +41,7 @@ export const SignupForm = ({ isAdmin = false }) => {
             onSubmit={handleSubmit}
           >
             {(props: FormikState<FormVals>) => (
-              <form className="pl-10" onSubmit={handleSubmit}>
+              <Form className="pl-10" onSubmit={handleSubmit}>
                 <div className=" mb-6 ">
                   <label
                     htmlFor="username"
@@ -101,7 +101,7 @@ export const SignupForm = ({ isAdmin = false }) => {
                 >
                   Sign Up
                 </button>
-              </form>
+              </Form>
             )}
           </Formik>
           <div className="pr-20 py-2">
