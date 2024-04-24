@@ -1,14 +1,19 @@
 import { useMutation } from '@tanstack/react-query';
-import { Formik, Form, withFormik, FormikProps, FormikState, FormikHelpers } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { useForm } from 'react-hook-form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { userSignup } from '../../API/api';
 import Loading from '../../components/Loading'
 
-interface FormVals {
-  name: string,
-  email: string,
-  pass: string
-}
+const signupFormSchema = z.object({
+  user: z.string().min(4, { message: "UserName should be atleast 4 characters long" }).max(50),
+  pass: z.string().min(8, { message: "password should be atleast 8 characters long" }),
+  email: z.string().email({ message: "Please enter a valid email ID" })
+})
 export const SignupForm = ({ isAdmin = false }) => {
   const navigateTO = useNavigate();
   const { mutate, isPending, isPaused, isError, error } = useMutation({
@@ -19,13 +24,16 @@ export const SignupForm = ({ isAdmin = false }) => {
       navigateTO('/users');
     },
   });
-  const initialValues: FormVals = {
-    name: '',
-    email: '',
-    pass: ''
-  }
-  const handleSubmit = (vals: FormVals) => {
-    mutate({ user: vals.name, email: vals.email, pass: vals.pass });
+  const signupForm = useForm<z.infer<typeof signupFormSchema>>({
+    defaultValues: {
+      user: "Monkey-menace",
+      pass: '',
+      email: 'monkey@saiyan.com',
+    },
+    resolver: zodResolver(signupFormSchema)
+  })
+  const handleSubmitSignup = (vals: z.infer<typeof signupFormSchema>) => {
+    mutate({ user: vals.user, email: vals.email, pass: vals.pass });
   }
   return (
     <>
@@ -36,74 +44,95 @@ export const SignupForm = ({ isAdmin = false }) => {
       )}
       {!(isPending || isPaused) && (
         <div className="container mx-auto px-20 py-2 flex flex-wrap items-center justify-between ">
-          <Formik
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
+          <Form
+            {...signupForm}
           >
-            {(props: FormikState<FormVals>) => (
-              <Form className="pl-10" onSubmit={handleSubmit}>
-                <div className=" mb-6 ">
-                  <label
-                    htmlFor="username"
-                    className="block mb-2 text-lg font-medium text-gray-900 dark:text-white"
-                  >
-                    User Name
-                  </label>
-                  <input
-                    className="bg-gray-50 border w-[300px] border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    type="text"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    value={props.values.name}
-                    name="name"
-                  />
-                </div>
-                <div className="mb-6">
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-lg font-medium text-gray-900 dark:text-white"
-                  >
-                    Email address
-                  </label>
-                  <input
-                    className="bg-gray-50 w-[300px] border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    type="email"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    value={props.values.email}
-                    name="email"
-                  />
-                </div>
+            <form className="pl-10" onSubmit={signupForm.handleSubmit(handleSubmitSignup)}>
+              <div className=" mb-6 ">
+                <FormField
+                  control={signupForm.control}
+                  name='user'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel
+                        className="block mb-2 text-lg font-medium text-slate-300"
+                      >
+                        User Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          className="bg-gray-50 border w-[300px] border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        />
+                      </FormControl>
+                      <FormDescription className='text-slate-400'>
+                        Enter the username which is atleast 4 characters long
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="mb-6">
+                <FormField
+                  control={signupForm.control}
+                  name='email'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel
+                        className="block mb-2 text-lg font-medium text-slate-300"
+                      >
+                        Email address
+                      </FormLabel>
+                      <FormControl>
+                        <input
+                          {...field}
+                          className="bg-gray-50 w-[300px] border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        />
+                      </FormControl>
+                      <FormDescription className='text-slate-400'>
+                        Enter a valid Email address
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-                <div className="mb-6">
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-lg font-medium text-gray-900 dark:text-white"
-                  >
-                    Password
-                  </label>
-                  <input
-                    className="bg-gray-50 w-[300px] border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    type="password"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    value={props.values.pass}
-                    name="pass"
-                  />
-                </div>
-                {props.errors.name && (
-                  <div id="feedback">{props.errors.name}</div>
-                )}
+              <div className="mb-6">
+                <FormField
+                  control={signupForm.control}
+                  name='pass'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel
+                        className="block mb-2 text-lg font-medium text-slate-200"
+                      >
+                        Password
+                      </FormLabel>
+                      <FormControl>
+                        <input
+                          {...field}
+                          className="bg-gray-50 w-[300px] border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        />
+                      </FormControl>
+                      <FormDescription className='text-slate-400'>
+                        Enter a passWord 8 characters long
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-                <button
-                  type="submit"
-                  className="bg-transparent hover:bg-slate-500 text-slate-300 font-semibold hover:text-white py-2 px-4 border border-slate-700 hover:border-transparent rounded"
-                >
-                  Sign Up
-                </button>
-              </Form>
-            )}
-          </Formik>
+              <Button
+                type="submit"
+                className="bg-transparent hover:bg-slate-500 text-slate-300 font-semibold hover:text-white py-2 px-4 border border-slate-700 hover:border-transparent rounded"
+              >
+                Sign Up
+              </Button>
+            </form>
+          </Form>
           <div className="pr-20 py-2">
             {!isAdmin && (
               <svg
@@ -129,7 +158,7 @@ export const SignupForm = ({ isAdmin = false }) => {
               </svg>
             )}
           </div>
-        </div>
+        </div >
       )}
     </>
   );
