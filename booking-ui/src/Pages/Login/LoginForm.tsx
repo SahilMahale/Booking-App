@@ -1,13 +1,20 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { z } from "zod"
-import { Form } from '@/components/ui/form';
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { userLogin } from '../../API/api';
 import { useAuth } from '../../Context/AuthContext';
 import Loading from '../../components/Loading';
+import { useForm } from 'react-hook-form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 const LoginFormSchema = z.object({
-  user: z.string().min(4, { message: "User must atleast have 4 characters" })
+  user: z.string().min(4, { message: "Username must atleast have 4 characters" }).max(50, {
+    message: "Username should be less than 50 characters"
+  }),
+  pass: z.string().min(8, { message: "Password should have atleast 8 characters" })
 })
 
 export const LoginForm = ({ isAdmin = false }) => {
@@ -15,7 +22,7 @@ export const LoginForm = ({ isAdmin = false }) => {
   /* const navigateTO = useNavigate(); */
 
   const { mutate, isPending, isPaused, isError, error } = useMutation({
-    mutationFn: ({ user, pass }: { user: string, pass: string }): Promise<{ auth_token: string; }> => {
+    mutationFn: ({ user, pass }: z.infer<typeof LoginFormSchema>): Promise<{ auth_token: string; }> => {
       return userLogin(user, pass);
     },
     onSuccess: (data: { auth_token: string }) => {
@@ -27,7 +34,16 @@ export const LoginForm = ({ isAdmin = false }) => {
       // navigateTO('/'); setToken does the routing cuz my router setup is ass
     },
   });
-
+  const loginForm = useForm<z.infer<typeof LoginFormSchema>>({
+    resolver: zodResolver(LoginFormSchema),
+    defaultValues: {
+      user: "Debby Dunce",
+      pass: "",
+    }
+  })
+  const onSubmit = (val: z.infer<typeof LoginFormSchema>) => {
+    mutate({ user: val.user, pass: val.pass })
+  }
   return (
     <>
       {(isPending || isPaused) && (
@@ -37,60 +53,71 @@ export const LoginForm = ({ isAdmin = false }) => {
       )}
       {!(isPending || isPaused) && (
         <div className="container mx-auto px-20 py-2 flex flex-wrap items-center justify-between ">
-          <Formik
-            initialValues={{ name: 'sahil', pass: '' }}
-            onSubmit={(vals: { name: string, pass: string }) => {
-              mutate({ user: vals.name, pass: vals.pass });
-            }}
+          <Form
+            {...loginForm}
           >
-            {(props) => (
-              <form className="pl-10" onSubmit={props.handleSubmit}>
-                <div className=" mb-6 ">
-                  <label
-                    htmlFor="username"
-                    className="block mb-2 text-lg font-medium text-gray-900 dark:text-white"
-                  >
-                    User Name
-                  </label>
-                  <input
-                    className="bg-gray-50 border w-[300px] border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    type="text"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    value={props.values.name}
-                    name="name"
-                  />
-                </div>
-                <div className="mb-6">
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-lg font-medium text-gray-900 dark:text-white"
-                  >
-                    Password
-                  </label>
-                  <input
-                    className="bg-gray-50 w-[300px] border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    type="password"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    value={props.values.pass}
-                    name="pass"
-                  />
-                </div>
+            <form className="pl-10" onSubmit={loginForm.handleSubmit(onSubmit)}>
+              <div className='mb-6'>
+                <FormField
+                  control={loginForm.control}
+                  name='user'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel
+                        className="block mb-2 text-lg font-medium text-slate-200"
+                      >
+                        User Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder='debby downer'
+                          className="bg-gray-50 border w-[300px] border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription className='text-slate-400'>
+                        Enter the username used while sighing up
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
 
-                {props.errors.name && (
-                  <div id="feedback">{props.errors.name}</div>
-                )}
+                  )}
+                />
+              </div>
+              <div className="mb-6">
+                <FormField
+                  control={loginForm.control}
+                  name='pass'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel
+                        className="block mb-2 text-lg font-medium text-slate-200"
+                      >
+                        Password
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          className="bg-gray-50 w-[300px] border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        />
+                      </FormControl>
+                      <FormDescription className='text-slate-400'>
+                        Enter the password set at sign up
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <Button
+                type="submit"
+                className="bg-transparent hover:bg-slate-500 text-slate-300 font-semibold hover:text-white py-2 px-4 border border-slate-700 hover:border-transparent rounded"
+              >
+                Log in
+              </Button>
+            </form>
 
-                <button
-                  type="submit"
-                  className="bg-transparent hover:bg-slate-500 text-slate-300 font-semibold hover:text-white py-2 px-4 border border-slate-700 hover:border-transparent rounded"
-                >
-                  Log in
-                </button>
-              </form>
-            )}
-          </Formik>
+          </Form>
           <div className="pr-20 py-2">
             {!isAdmin && (
               <svg
@@ -116,7 +143,7 @@ export const LoginForm = ({ isAdmin = false }) => {
               </svg>
             )}
           </div>
-        </div>
+        </div >
       )}
     </>
   );
