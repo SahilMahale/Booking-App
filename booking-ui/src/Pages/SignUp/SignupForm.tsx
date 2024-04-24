@@ -158,7 +158,7 @@ export const SignupForm = ({ isAdmin = false }) => {
               </svg>
             )}
           </div>
-        </div >
+        </div>
       )}
     </>
   );
