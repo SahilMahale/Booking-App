@@ -2,12 +2,20 @@ import React, { useReducer } from 'react';
 import { Button } from '@material-tailwind/react';
 import { TableCard } from './TableCard';
 import icon from './ButtonIcon.svg'
-import { cardInfo } from './mockAPI';
+import { cardInfo, CardInfo, TableInfo } from './mockAPI';
 import { TABLESTATES, ACTIONS } from './constants';
 import { checkAvailable } from './utlis';
 import { useEffect, useMemo } from 'react';
 import { useAuth } from '../../Context/AuthContext';
 
+export type TableState = {
+  tableInfo: TableInfo,
+  tableState: string
+}
+export type TableGridState = {
+  tablseMap: Map<number, TableState>
+  selectedTables: Array<number>
+}
 const initialState = {
   0: {
     tableInfo: undefined,

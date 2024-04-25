@@ -1,5 +1,15 @@
-
-export const cardInfo = {
+export type TableInfo = {
+  available: boolean,
+  seats: number,
+  nonVeg: boolean,
+  ac: boolean,
+  id: number
+}
+export type CardInfo = {
+  totalTables: number,
+  tables: Array<TableInfo>,
+}
+export const cardInfo: CardInfo = {
   totalTables: 10,
   tables: [
     {
