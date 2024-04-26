@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react';
-import { Button } from '@material-tailwind/react';
+import { Button } from '@/components/ui/button';
 import { TableCard } from './TableCard';
 import icon from './ButtonIcon.svg'
 import { cardInfo, CardInfo, TableInfo } from './mockAPI';
@@ -9,18 +9,25 @@ import { useEffect, useMemo } from 'react';
 import { useAuth } from '../../Context/AuthContext';
 
 export type TableState = {
-  tableInfo: TableInfo,
-  tableState: string
+  tableInfo: TableInfo | undefined,
+  tableStatus: string
 }
 export type TableGridState = {
-  tablseMap: Map<number, TableState>
+  tablesMap: Map<number, TableState>
   selectedTables: Array<number>
 }
-const initialState = {
-  0: {
-    tableInfo: undefined,
-    tableStatus: TABLESTATES.AVAILABLE
-  },
+type TableStateActions = {
+  type: string,
+  tableInfo: TableInfo,
+}
+
+const initialState: TableGridState = {
+  tablesMap: new Map<number, TableState>([
+    [0, {
+      tableInfo: undefined,
+      tableStatus: TABLESTATES.AVAILABLE
+    }],
+  ]),
   selectedTables: [],
 };
 let reren = 0;
@@ -40,26 +47,32 @@ const BookTable = (bookInfo, selectedTablesArr = []) => {
   return arr
 }
 // Refactor to match the new hashMap state
-function tableReducer(tableState, action) {
+function tableReducer(tableState: TableGridState, action: TableStateActions): TableGridState {
   //console.log("DISPATCHING____________________________________________________")
   if (action.type === ACTIONS.SELECT) {
-    const tableInfo = action.payload.tableInfo;
-    if (!tableInfo.available || !tableState[tableInfo.id] || tableState[tableInfo.id].tableStatus === TABLESTATES.BOOKED) {
+    const tableInfo = action.tableInfo;
+    const gridStateTableInfo = tableState.tablesMap.get(tableInfo.id)
+    if (!tableInfo.available || !gridStateTableInfo) {
       alert("Table is already booked or is unavialable")
       return { ...tableState }
     }
-    tableState[tableInfo.id].tableStatus = TABLESTATES.SELECTED;
-    tableState.selectedTables?.push(tableInfo.id)
+    if (gridStateTableInfo.tableStatus === TABLESTATES.BOOKED) {
+      alert("Table is already booked or is unavialable")
+      return { ...tableState }
+    }
+    gridStateTableInfo.tableStatus = TABLESTATES.SELECTED;
+    tableState.selectedTables.push(tableInfo.id)
     /*react doesn't rerender for same object with mutation,
      * it needs a new object like a babyi */
     return { ...tableState }
   } else if (action.type === ACTIONS.DESELECT) {
-    const tableInfo = action.payload.tableInfo;
-    if (!tableState[tableInfo.id]) {
+    const tableInfo = action.tableInfo;
+    const gridStateTableInfo = tableState.tablesMap.get(tableInfo.id)
+    if (!gridStateTableInfo) {
       return { ...tableState }
     }
-    tableState[tableInfo.id].tableStatus = TABLESTATES.AVAILABLE
-    tableState.selectedTables = tableState.selectedTables?.filter((elem) => {
+    gridStateTableInfo.tableStatus = TABLESTATES.AVAILABLE
+    tableState.selectedTables = tableState.selectedTables.filter((elem) => {
       return elem !== tableInfo.id
     })
     return { ...tableState }
@@ -71,7 +84,11 @@ function tableReducer(tableState, action) {
 
       bookedTables.map((tId) => {
         // console.log("After fileter:", tableState.selectedTables)
-        tableState[tId].tableStatus = TABLESTATES.BOOKED
+        const tabelfromState = tableState.tablesMap.get(tId)
+        if (!tabelfromState) {
+          return
+        }
+        tabelfromState.tableStatus = TABLESTATES.BOOKED
       })
 
       tableState.selectedTables = []
@@ -80,19 +97,20 @@ function tableReducer(tableState, action) {
     return tableState
   }
   else if (action.type === ACTIONS.LOAD) {
-    const tableInfo = action.payload.tableInfo;
+    const tableInfo = action.tableInfo;
     //console.log("start loading")
     if (tableInfo === undefined) {
       return { ...tableState }
     }
-    tableState[tableInfo.id] = {
+    tableState.tablesMap.set(tableInfo.id, {
       tableInfo: tableInfo,
       tableStatus: checkAvailable(tableInfo.available)
-    }
+    })
     // Do not want reRenders here just bulk loading everything in  
     return tableState
   } else {
     alert("Select a valid table to be booked")
+    return tableState
   }
 }
 function Book() {
@@ -100,14 +118,14 @@ function Book() {
   reren++
   console.log("Re-Render Book page count:", reren)
   console.log("-----------------------------------------")
-  const [tablesStates, dispatchTables] = useReducer(tableReducer, initialState);
-  const { appContext } = useAuth()
+  const [tablesStates, dispatchTables] = useReducer<React.Reducer<TableGridState, TableStateActions>>(tableReducer, initialState);
+  const { Context: appContext } = useAuth()
   const userName = appContext.claims.user
   // to avoid too many re-render
   useMemo(() => {
     cardInfo.tables.map((table) => {
       console.log("call load")
-      dispatchTables({ type: ACTIONS.LOAD, payload: { tableInfo: table } })
+      dispatchTables({ type: ACTIONS.LOAD, tableInfo: table })
     })
   }, [])
   useEffect(() => {

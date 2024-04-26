@@ -7,7 +7,7 @@ import Loading from '../components/Loading';
 const useGetBookingList = () => {
   const { Context: appContext } = useAuth();
   const resp = useQuery({
-    queryKey: ['bookings', appContext.token, appContext.claims.name],
+    queryKey: ['bookings', appContext.token, appContext.claims.user],
     queryFn: getBookingsList,
     refetchInterval: 10000,
     refetchOnReconnect: true,
