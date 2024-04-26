@@ -7,36 +7,36 @@ import { ACTIONS, TABLESTATES } from "./constants";
 import { useRef } from "react";
 import { Card, CardHeader, CardDescription, CardFooter, CardContent, CardTitle } from "@/components/ui/card";
 import { TableInfo } from "./mockAPI";
+import { TableState, TableStateActions } from "./Book";
 //import { useBookingConext } from "./Book";
 
 let reren = 0
 
-export const TableCard = (({ tableInfo, state, dispatcherFunc }) => {
+export const TableCard = (({ tableInfo, state, dispatcherFunc }: { tableInfo: TableInfo, state: TableState, dispatcherFunc: React.Dispatch<TableStateActions> }) => {
 
   console.log("-----------------------------------------")
   reren++
   console.log("Re-Render Card grid count:", reren)
   console.log("-----------------------------------------")
 
-  if (tableInfo === undefined) {
-    return
-  }
   const tableInfoRef = useRef(tableInfo)
-  if (state === undefined) {
-    return
-  }
-  function handleClick(tableInfo) {
+
+  function handleClick(tableInfo: TableInfo) {
     console.log("CardCLicked with Status:", state.tableStatus)
-    if (state.tableStatus === TABLESTATES.SELECTED) {
-      //setIsSelected(!tableIsSelected)
-      dispatcherFunc({ type: ACTIONS.DESELECT, payload: { tableInfo: tableInfo } })
-      return
+    try {
+      if (state.tableStatus === TABLESTATES.SELECTED) {
+        //setIsSelected(!tableIsSelected)
+        dispatcherFunc({ type: ACTIONS.DESELECT, tableInfo: tableInfo })
+        return
+      }
+      dispatcherFunc({ type: ACTIONS.SELECT, tableInfo: tableInfo })
+    } catch (e) {
+      console.error(e)
     }
-    dispatcherFunc({ type: ACTIONS.SELECT, payload: { tableInfo: tableInfo } })
   }
 
   return (
-    <Card key={tableInfoRef.current?.id} id={tableInfoRef.current.id}
+    <Card key={tableInfoRef.current?.id} id={tableInfoRef.current.id.toString()}
       onClick={() => {
         //    console.log("Table Created with: ", tableInfoRef.current, "With state: ", state)
         handleClick(tableInfoRef.current)
@@ -47,6 +47,9 @@ export const TableCard = (({ tableInfo, state, dispatcherFunc }) => {
         <CardTitle className="mb-2 text-center">
           Table
         </CardTitle>
+        <CardDescription>
+          Table Description
+        </CardDescription>
       </CardHeader>
       <CardContent className="">
         <TableIcon status={state.tableStatus} />

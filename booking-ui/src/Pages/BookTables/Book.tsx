@@ -16,9 +16,10 @@ export type TableGridState = {
   tablesMap: Map<number, TableState>
   selectedTables: Array<number>
 }
-type TableStateActions = {
+export type TableStateActions = {
   type: string,
-  tableInfo: TableInfo,
+  tableInfo?: TableInfo,
+  userName?: string
 }
 
 const initialState: TableGridState = {
@@ -33,12 +34,12 @@ const initialState: TableGridState = {
 let reren = 0;
 
 
-const BookTable = (bookInfo, selectedTablesArr = []) => {
-  let selectedTablesInfo = new Map()
+const BookTable = (bookInfo: TableGridState, selectedTablesArr: Array<number>) => {
+  const selectedTablesInfo = new Map()
   selectedTablesArr.map((tableID) => {
     selectedTablesInfo.set(tableID, bookInfo[tableID])
   })
-  let arr = []
+  const arr = []
 
   for (const tab of selectedTablesInfo.keys()) {
     arr.push(tab)
@@ -51,6 +52,9 @@ function tableReducer(tableState: TableGridState, action: TableStateActions): Ta
   //console.log("DISPATCHING____________________________________________________")
   if (action.type === ACTIONS.SELECT) {
     const tableInfo = action.tableInfo;
+    if (!tableInfo) {
+      throw new Error("Error tableInfo is undefined")
+    }
     const gridStateTableInfo = tableState.tablesMap.get(tableInfo.id)
     if (!tableInfo.available || !gridStateTableInfo) {
       alert("Table is already booked or is unavialable")
@@ -67,6 +71,9 @@ function tableReducer(tableState: TableGridState, action: TableStateActions): Ta
     return { ...tableState }
   } else if (action.type === ACTIONS.DESELECT) {
     const tableInfo = action.tableInfo;
+    if (!tableInfo) {
+      throw new Error("Error tableInfo is undefined")
+    }
     const gridStateTableInfo = tableState.tablesMap.get(tableInfo.id)
     if (!gridStateTableInfo) {
       return { ...tableState }
@@ -78,6 +85,12 @@ function tableReducer(tableState: TableGridState, action: TableStateActions): Ta
     return { ...tableState }
   } else if (action.type === ACTIONS.BOOK) {
     //change to use selectedTables array
+    if (!action) {
+      throw new Error("Error: Pass a valid userName")
+    }
+    if (action.userName == "") {
+      throw new Error("Error: Pass a valid userName")
+    }
     if (tableState.selectedTables?.length > 0) {
       const bookedTables = BookTable(tableState, tableState.selectedTables);
       console.log(typeof bookedTables, bookedTables)
@@ -99,8 +112,8 @@ function tableReducer(tableState: TableGridState, action: TableStateActions): Ta
   else if (action.type === ACTIONS.LOAD) {
     const tableInfo = action.tableInfo;
     //console.log("start loading")
-    if (tableInfo === undefined) {
-      return { ...tableState }
+    if (!tableInfo) {
+      throw new Error("Error tableInfo is undefined")
     }
     tableState.tablesMap.set(tableInfo.id, {
       tableInfo: tableInfo,
@@ -125,7 +138,11 @@ function Book() {
   useMemo(() => {
     cardInfo.tables.map((table) => {
       console.log("call load")
-      dispatchTables({ type: ACTIONS.LOAD, tableInfo: table })
+      try {
+        dispatchTables({ type: ACTIONS.LOAD, tableInfo: table })
+      } catch (e) {
+        console.error(e)
+      }
     })
   }, [])
   useEffect(() => {
@@ -142,16 +159,17 @@ function Book() {
         <div className='flex flex-col'>
           <div className=' mt-50 lg:grid lg:grid-cols-5 gap-5 md:flex md:flex-col'>
             {cardInfo && (cardInfo.tables.map((table) => {
+              const tState = tablesStates.tablesMap.get(table.id)
+              if (!tState) {
+                return
+              }
               return (
-                <TableCard key={table.id} tableInfo={table} state={tablesStates[table.id]} dispatcherFunc={dispatchTables} />
+                < TableCard key={table.id} tableInfo={table} state={tState} dispatcherFunc={dispatchTables} />
               )
             }))}
           </div>
           <div className='fixed lg:bottom-36 lg:right-44 sm:right-32 right-[1px] p-4 flex'>
             <Button
-              variant='gradient'
-              about='Button to book selected tables'
-
               onClick={() => {
                 dispatchTables({ type: ACTIONS.BOOK })
               }}
