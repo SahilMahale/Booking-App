@@ -10,6 +10,7 @@ import (
 
 	"github.com/SahilMahale/Booking-App/booking-server/constants"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -98,6 +99,7 @@ func makeTokenWithClaims(checkIfAdmin bool, username string) (token string, err 
 	// Generate encoded token and send it as response.
 	token, errp := ctoken.SignedString(privateKey)
 	if errp != nil {
+		log.Error(errp)
 		return "", errp
 	}
 	return token, nil

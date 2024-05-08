@@ -68,7 +68,7 @@ const userSignup = async (user: string, email: string, pass: string, isadmin: bo
   let data;
   await axios
     .post(
-      `$/api/user/signup`,
+      `/api/user/signup`,
       {
         user: user,
         email: email,

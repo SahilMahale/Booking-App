@@ -13,30 +13,19 @@ mainly to practice DB connection with gorm, implement auth from scratch and to l
     * pnpm [package manager](https://pnpm.io/)
     * vite [bundler/dev server](https://vitejs.dev/guide/why.html)
     * react
-### Starting database
-helm repo add bitnami https://charts.bitnami.com/bitnami 
+### Starting database for dev
 
-helm install my-release bitnami/mysql    
-
-Execute the following to get the administrator credentials:
- 
-  echo Username: root
-  MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace default my-release -o jsonpath="{.data.mysql-root-password}" | base64 -d)
-
-To connect to your database:
-
-  1. Run a pod that you can use as a client:
-
-      kubectl run my-release-client --rm --tty -i --restart='Never' --image  docker.io/bitnami/mysql:8.0.33-debian-11-r7 --namespace default --env MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD --command -- bash
-
-  2. To connect to primary service (read/write):
-
-      mysql -h my-release.default.svc.cluster.local -uroot -p"$MYSQL_ROOT_PASSWORD"
-### Database ENV variables 
+Start the docker container and get the container IP from the commands below 
+```bash 
+docker run -d --name mysql-dev-server  -e MYSQL_ROOT_PASSWORD=password123 bitnami/mysql:latest
+docker inspect <container-ID>
+```
+### ENV variables 
 ```bash
 export MYSQL_USERNAME=<dbuser>
 export MYSQL_PASSWORD=<dbpass>
 export MYSQL_IP=<dbIP:port>
+export APP_AUTH=<path to secrets folder conataining generated keys>
 ```
 
 ### Starting backend for dev
