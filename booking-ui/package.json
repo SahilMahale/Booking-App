@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "routesGen": "tsr generate",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -16,6 +17,8 @@
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@tanstack/react-query": "^5.8.4",
+    "@tanstack/react-router": "^1.31.23",
+    "@tanstack/router-cli": "^1.32.2",
     "axios": "^1.6.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -26,7 +29,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.3",
-    "react-router-dom": "^6.19.0",
     "sort-by": "^1.2.0",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
@@ -34,6 +36,8 @@
     "zod": "^3.23.3"
   },
   "devDependencies": {
+    "@tanstack/router-devtools": "^1.31.23",
+    "@tanstack/router-vite-plugin": "^1.31.18",
     "@types/node": "^20.12.7",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
@@ -48,8 +52,6 @@
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
     "typescript": "^5.2.2",
-    "vite": "^5.2.0",
-    "vite-plugin-react-svg": "^0.2.0",
-    "vite-plugin-react-svgr": "^1.0.1"
+    "vite": "^5.2.0"
   }
 }

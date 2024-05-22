@@ -1,20 +1,18 @@
 import { ReactNode } from 'react';
-import { Link, Outlet, useMatch, useResolvedPath } from 'react-router-dom';
+import { Link, Outlet } from '@tanstack/react-router';
 import { useAuth } from '../Context/AuthContext';
 
-const AnchorLinks = ({ to, children, isTitle, ...props }: { to: string, children: ReactNode, isTitle: boolean }) => {
-  const resPath = useResolvedPath(to);
-  const isActive = useMatch({ path: resPath.pathname, end: true });
+const AnchorLinks = ({ to, children, isTitle, ...props }: { to: string, children?: ReactNode, isTitle: boolean }) => {
   return (
     <Link
       to={to}
       className={`font-sans py-2.5 rounded-lg ${isTitle ? 'tracking-tighter text-4xl px-3' : 'text-base px-5'
-        }  text-slate-200 text-center font-bold hover:ring-sky-300 hover:ring-2 ${isActive ? 'bg-slate-800' : ''
-        }`}
+        }  text-slate-200 text-center font-bold hover:ring-sky-300 hover:ring-2`}
+      activeProps={{ className: 'bg-slate-800' }}
       {...props}
     >
       {children}
-    </Link>
+    </Link >
   );
 };
 
@@ -31,7 +29,7 @@ const LogoutButton = ({ logOutHandler }: { logOutHandler: () => void }) => {
   );
 };
 
-const Navbar = ({ children }: { children: ReactNode }) => {
+const Navbar = ({ children }: { children?: ReactNode }) => {
   const { Context: appContext, LogOut } = useAuth();
   if (!LogOut) {
     console.error("Error: LogOut function not found")
@@ -66,8 +64,8 @@ const Navbar = ({ children }: { children: ReactNode }) => {
           )}
         </div>
       </nav>
-      {children}
       <Outlet />
+      {children}
     </div>
   );
 };

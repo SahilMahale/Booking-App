@@ -94,7 +94,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     catch (e) {
       console.error(e)
     }
-    window.location.replace('/');
+    //  window.location.replace('/');
   }, []);
   const LogOut = useCallback(() => {
     try {
