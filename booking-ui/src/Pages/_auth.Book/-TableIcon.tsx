@@ -1,20 +1,18 @@
-
-
 const statusColors = new Map<string, string>([
-  ["available", "fill- slate - 400"],
+  ["available", "fill-slate-400"],
   ["selected", "fill-cyan-400"],
-  ["unavailable", "fill - amber - 600"],
+  ["unavailable", "fill-amber-600"],
   ["booked", "fill-green-400"],
 ])
 
 
 export default function TableIcon({ status = "available" }) {
   let fillColor = statusColors.get(status)
-  if (fillColor) {
-    fillColor = ""
+  if (!fillColor) {
+    fillColor = "fill-slate-400"
   }
   return (
-    <svg className={`${fillColor} stroke-black drop-shadow-xl md:hover:shadow-cyan-400 self-center`}
+    <svg className={`${fillColor} drop-shadow-xl md:hover:shadow-cyan-400 self-center`}
       xmlns="http://www.w3.org/2000/svg"
       xmlSpace="preserve"
       width={200}

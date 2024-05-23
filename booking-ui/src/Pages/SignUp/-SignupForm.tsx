@@ -21,7 +21,7 @@ export const SignupForm = ({ isAdmin = false }) => {
       return userSignup(user, email, pass, isAdmin);
     },
     onSuccess: () => {
-      navigateTO({ to: '/users' });
+      navigateTO({ to: '/Login' });
     },
   });
   const signupForm = useForm<z.infer<typeof signupFormSchema>>({
@@ -112,6 +112,7 @@ export const SignupForm = ({ isAdmin = false }) => {
                       </FormLabel>
                       <FormControl>
                         <input
+                          type='password'
                           {...field}
                           className=" w-[300px] border text-gray-900 text-lg rounded-lg  block p-2.5 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
                         />

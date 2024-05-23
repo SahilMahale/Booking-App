@@ -7,6 +7,7 @@ import React, {
   ReactNode,
   useCallback
 } from 'react';
+import { sleep } from './utils';
 
 const enum ACTIONS {
   LOGIN,
@@ -29,7 +30,7 @@ export type Context = {
 export interface AppContext {
   Context: Context
   setToken?(jwtToken: string): void
-  LogOut?(): void
+  LogOut?(): Promise<boolean>
 }
 export type ActionType = {
   type: number,
@@ -87,23 +88,24 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const [appContext, dispatch] = useReducer<React.Reducer<Context, ActionType>>(reducer, initialContext);
   console.log("---------------AUTH RELOAD----------------")
-  const SetToken = useCallback((jwtToken: string) => {
+  const SetToken = useCallback(async (jwtToken: string) => {
     try {
       dispatch({ type: ACTIONS.LOGIN, token: jwtToken });
     }
     catch (e) {
       console.error(e)
     }
+    await sleep(500)
     //  window.location.replace('/');
   }, []);
-  const LogOut = useCallback(() => {
+  const LogOut = useCallback(async () => {
     try {
       dispatch({ type: ACTIONS.LOGOUT });
     }
     catch (e) {
       console.error(e)
     }
-
+    return Promise.resolve(true)
   }, []);
   useMemo(() => {
 
@@ -126,7 +128,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useAuth = () => {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider')
+  }
+  return context
 };
 
 export default AuthProvider;

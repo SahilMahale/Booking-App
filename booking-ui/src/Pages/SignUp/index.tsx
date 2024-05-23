@@ -2,9 +2,17 @@ import { Switch } from '@headlessui/react';
 import { useState } from 'react';
 
 import { SignupForm } from './-SignupForm';
-import { createFileRoute } from '@tanstack/react-router';
-
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import { z } from 'zod';
 export const Route = createFileRoute('/SignUp/')({
+  validateSearch: z.object({
+    redirect: z.string().optional().catch('')
+  }),
+  beforeLoad: ({ context, search }) => {
+    if (context.auth.Context.isLoggedIn) {
+      throw redirect({ to: search.redirect || '/Home' })
+    }
+  },
   component: Signup
 })
 function Signup({ isAdmin = false }) {

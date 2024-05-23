@@ -1,8 +1,19 @@
 import { Switch } from '@headlessui/react';
 import React, { useState } from 'react';
 import { LoginForm } from './-LoginForm';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import { z } from 'zod';
 export const Route = createFileRoute('/Login/')({
+  validateSearch: z.object({
+    redirect: z.string().optional().catch('')
+  }),
+  beforeLoad: ({ context, search }) => {
+    if (context.auth.Context.isLoggedIn) {
+      throw redirect({
+        to: search.redirect || '/home'
+      })
+    }
+  },
   component: Login
 })
 

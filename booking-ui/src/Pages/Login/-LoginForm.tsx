@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useRouter } from '@tanstack/react-router';
 import { z } from "zod"
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -19,19 +19,21 @@ const LoginFormSchema = z.object({
 
 export const LoginForm = ({ isAdmin = false }) => {
   const { setToken } = useAuth();
-  const navigateTO = useNavigate();
+  const router = useRouter()
+  const navigate = useNavigate();
 
   const { mutate, isPending, isPaused, isError, error } = useMutation({
     mutationFn: ({ user, pass }: z.infer<typeof LoginFormSchema>): Promise<{ auth_token: string; }> => {
       return userLogin(user, pass);
     },
-    onSuccess: (data: { auth_token: string }) => {
+    onSuccess: async (data: { auth_token: string }) => {
       if (!setToken) {
         alert("Error: setToken function undefined")
         return
       }
-      setToken(data.auth_token);
-      navigateTO({ to: '/' }); //setToken does the routing cuz my router setup is ass
+      await setToken(data.auth_token)
+      router.invalidate()
+      navigate({ to: '/Home' }); //setToken does the routing cuz my router setup is ass
     },
   });
   const loginForm = useForm<z.infer<typeof LoginFormSchema>>({
@@ -97,6 +99,7 @@ export const LoginForm = ({ isAdmin = false }) => {
                       </FormLabel>
                       <FormControl>
                         <Input
+                          type='password'
                           {...field}
                           className="bg-gray-50 w-[300px] border  text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 border-gray-600 :placeholder-gray-400 "
                         />

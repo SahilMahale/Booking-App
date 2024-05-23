@@ -7,17 +7,17 @@ import { ACTIONS, TABLESTATES } from "./-constants";
 import { useRef } from "react";
 import { Card, CardHeader, CardDescription, CardFooter, CardContent, CardTitle } from "@/components/ui/card";
 import { TableInfo } from "./-mockAPI";
-import { TableState, TableStateActions } from "./BookTable";
+import { TableState, TableStateActions } from "./Tables";
 //import { useBookingConext } from "./Book";
 
-let reren = 0
+//let reren = 0
 
 export const TableCard = (({ tableInfo, state, dispatcherFunc }: { tableInfo: TableInfo, state: TableState, dispatcherFunc: React.Dispatch<TableStateActions> }) => {
 
-  console.log("-----------------------------------------")
-  reren++
-  console.log("Re-Render Card grid count:", reren)
-  console.log("-----------------------------------------")
+  /* console.log("-----------------------------------------")
+   reren++
+   console.log("Re-Render Card grid count:", reren, "TableState:", state)
+   console.log("-----------------------------------------")*/
 
   const tableInfoRef = useRef(tableInfo)
 
@@ -41,10 +41,10 @@ export const TableCard = (({ tableInfo, state, dispatcherFunc }: { tableInfo: Ta
         //    console.log("Table Created with: ", tableInfoRef.current, "With state: ", state)
         handleClick(tableInfoRef.current)
       }}
-      className="mt-6 w-60 h-80 p-4 bg-gray-700 text-slate-300 cursor-pointer rounded-lg border-1 
+      className="w-60 h-80 bg-gray-700 text-slate-300 cursor-pointer rounded-lg border-1 
       hover:ring-2 hover:ring-cyan-400 drop-shadow-2xl shadow-lg shadow-slate-900 hover:shadow-xl hover:shadow-cyan-700/60">
       <CardHeader className="relative items-center bg-gray-700 text-gray-100">
-        <CardTitle className="mb-2 text-center">
+        <CardTitle className="text-center">
           Table
         </CardTitle>
         <CardDescription>
@@ -53,7 +53,7 @@ export const TableCard = (({ tableInfo, state, dispatcherFunc }: { tableInfo: Ta
       </CardHeader>
       <CardContent className="">
         <TableIcon status={state.tableStatus} />
-        <div className="pt-8">
+        <div className="">
           <h5>
             A/C: {tableInfoRef.current.ac ? (<img className="inline align-baseline px-1" src={check} width={20} />) :
               (<img className="inline align-baseline px-1" src={cross} width={18} />)}
@@ -61,12 +61,10 @@ export const TableCard = (({ tableInfo, state, dispatcherFunc }: { tableInfo: Ta
           <h5>
             Seats : {tableInfoRef.current.seats}
           </h5>
+          {tableInfoRef.current.nonVeg ? (<img className="inline align-baseline px-1" src={nonVeg} width={35} />) :
+            (<img src={veg} width={30} />)}
         </div>
       </CardContent>
-      <CardFooter className="pt-1">
-        {tableInfoRef.current.nonVeg ? (<img className="inline align-baseline px-1" src={nonVeg} width={35} />) :
-          (<img src={veg} width={30} />)}
-      </CardFooter>
     </Card>
   );
 })

@@ -15,12 +15,12 @@ mainly to practice DB connection with gorm, implement auth from scratch and to l
     * react
 ### Starting database for dev
 
-Start the docker container and get the container IP from the commands below 
+Start the docker container and grab the container IP from the commands below 
 ```bash 
 docker run -d --name mysql-dev-server  -e MYSQL_ROOT_PASSWORD=password123 bitnami/mysql:latest
 docker inspect <container-ID>
 ```
-### ENV variables 
+### Backend ENV variables 
 ```bash
 export MYSQL_USERNAME=<dbuser>
 export MYSQL_PASSWORD=<dbpass>
@@ -33,6 +33,10 @@ export APP_AUTH=<path to secrets folder conataining generated keys>
 cd booking-server
 go mod tidy
 go run cmd/main.go
+
+### Frontend ENV variables
+```bash 
+export API_GATEWAY =<IP where backend is hosted >
 ```
 ### Starting frontend for dev
 ```bash

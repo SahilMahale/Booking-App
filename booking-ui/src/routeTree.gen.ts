@@ -11,17 +11,18 @@
 // Import Routes
 
 import { Route as rootRoute } from './Pages/__root'
-import { Route as HomeImport } from './Pages/Home'
+import { Route as AuthImport } from './Pages/_auth'
 import { Route as IndexImport } from './Pages/index'
 import { Route as UsersIndexImport } from './Pages/Users/index'
 import { Route as SignUpIndexImport } from './Pages/SignUp/index'
 import { Route as LoginIndexImport } from './Pages/Login/index'
-import { Route as BookTablesImport } from './Pages/Book/Tables'
+import { Route as AuthHomeImport } from './Pages/_auth.Home'
+import { Route as AuthBookTablesImport } from './Pages/_auth.Book/Tables'
 
 // Create/Update Routes
 
-const HomeRoute = HomeImport.update({
-  path: '/Home',
+const AuthRoute = AuthImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -45,9 +46,14 @@ const LoginIndexRoute = LoginIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const BookTablesRoute = BookTablesImport.update({
+const AuthHomeRoute = AuthHomeImport.update({
+  path: '/Home',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthBookTablesRoute = AuthBookTablesImport.update({
   path: '/Book/Tables',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => AuthRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -58,13 +64,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/Home': {
-      preLoaderRoute: typeof HomeImport
+    '/_auth': {
+      preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/Book/Tables': {
-      preLoaderRoute: typeof BookTablesImport
-      parentRoute: typeof rootRoute
+    '/_auth/Home': {
+      preLoaderRoute: typeof AuthHomeImport
+      parentRoute: typeof AuthImport
     }
     '/Login/': {
       preLoaderRoute: typeof LoginIndexImport
@@ -78,6 +84,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UsersIndexImport
       parentRoute: typeof rootRoute
     }
+    '/_auth/Book/Tables': {
+      preLoaderRoute: typeof AuthBookTablesImport
+      parentRoute: typeof AuthImport
+    }
   }
 }
 
@@ -85,8 +95,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
-  HomeRoute,
-  BookTablesRoute,
+  AuthRoute.addChildren([AuthHomeRoute, AuthBookTablesRoute]),
   LoginIndexRoute,
   SignUpIndexRoute,
   UsersIndexRoute,

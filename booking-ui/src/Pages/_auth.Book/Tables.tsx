@@ -67,8 +67,12 @@ function tableReducer(tableState: TableGridState, action: TableStateActions): Ta
     }
     gridStateTableInfo.tableStatus = TABLESTATES.SELECTED;
     tableState.selectedTables.push(tableInfo.id)
-    /*react doesn't rerender for same object with mutation,
-     * it needs a new object like a babyi */
+    /* console.log("--------------------------------------------")
+     console.log("AFTER SELECTING TABLE: ", tableInfo.id)
+     console.log("tableSate:", tableState)
+     console.log("--------------------------------------------")
+     /*react doesn't rerender for same object with mutation,
+      * it needs a new object like a babyi */
     return { ...tableState }
   } else if (action.type === ACTIONS.DESELECT) {
     const tableInfo = action.tableInfo;
@@ -128,7 +132,7 @@ function tableReducer(tableState: TableGridState, action: TableStateActions): Ta
   }
 }
 
-export const Route = createFileRoute('/Book/Tables')({
+export const Route = createFileRoute('/_auth/Book/Tables')({
   component: Book
 })
 
@@ -176,10 +180,11 @@ function Book() {
           </div>
           <div className='fixed lg:bottom-36 lg:right-44 sm:right-32 right-[1px] p-4 flex'>
             <Button
+              size="lg"
               onClick={() => {
                 dispatchTables({ type: ACTIONS.BOOK })
               }}
-              className={` ${(tablesStates.selectedTables?.length > 0) ? "bg-cyan-400 text-cyan-900" : "bg-gray-500 text-gray-200"}   rounded-full w-24  drop-shadow-2xl font-bold`}>
+              className={` ${(tablesStates.selectedTables?.length > 0) ? "bg-cyan-400 text-cyan-900" : "bg-gray-500 text-gray-200"}   rounded-full   drop-shadow-2xl font-bold`}>
               <img src={icon} />
               Book
             </Button>
