@@ -61,30 +61,51 @@ const AuthBookTablesRoute = AuthBookTablesImport.update({
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
     '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
     '/_auth/Home': {
+      id: '/_auth/Home'
+      path: '/Home'
+      fullPath: '/Home'
       preLoaderRoute: typeof AuthHomeImport
       parentRoute: typeof AuthImport
     }
     '/Login/': {
+      id: '/Login/'
+      path: '/Login'
+      fullPath: '/Login'
       preLoaderRoute: typeof LoginIndexImport
       parentRoute: typeof rootRoute
     }
     '/SignUp/': {
+      id: '/SignUp/'
+      path: '/SignUp'
+      fullPath: '/SignUp'
       preLoaderRoute: typeof SignUpIndexImport
       parentRoute: typeof rootRoute
     }
     '/Users/': {
+      id: '/Users/'
+      path: '/Users'
+      fullPath: '/Users'
       preLoaderRoute: typeof UsersIndexImport
       parentRoute: typeof rootRoute
     }
     '/_auth/Book/Tables': {
+      id: '/_auth/Book/Tables'
+      path: '/Book/Tables'
+      fullPath: '/Book/Tables'
       preLoaderRoute: typeof AuthBookTablesImport
       parentRoute: typeof AuthImport
     }
@@ -93,12 +114,12 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([
+export const routeTree = rootRoute.addChildren({
   IndexRoute,
-  AuthRoute.addChildren([AuthHomeRoute, AuthBookTablesRoute]),
+  AuthRoute: AuthRoute.addChildren({ AuthHomeRoute, AuthBookTablesRoute }),
   LoginIndexRoute,
   SignUpIndexRoute,
   UsersIndexRoute,
-])
+})
 
 /* prettier-ignore-end */

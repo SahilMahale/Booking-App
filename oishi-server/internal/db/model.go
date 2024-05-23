@@ -1,6 +1,6 @@
 package db
 
-import "github.com/SahilMahale/Booking-App/booking-server/constants"
+import "github.com/SahilMahale/OishiDes/oishi-server/constants"
 
 type User struct {
 	Username string `gorm:"primaryKey;type:varchar(36);"`

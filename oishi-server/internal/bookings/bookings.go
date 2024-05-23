@@ -1,8 +1,8 @@
 package bookings
 
 import (
-	"github.com/SahilMahale/Booking-App/booking-server/internal/db"
-	"github.com/SahilMahale/Booking-App/booking-server/internal/helper"
+	"github.com/SahilMahale/OishiDes/oishi-server/internal/db"
+	"github.com/SahilMahale/OishiDes/oishi-server/internal/helper"
 	"github.com/google/uuid"
 )
 

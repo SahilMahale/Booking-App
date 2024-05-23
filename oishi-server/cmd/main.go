@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/SahilMahale/Booking-App/booking-server/internal/db"
-	"github.com/SahilMahale/Booking-App/booking-server/server"
+	"github.com/SahilMahale/OishiDes/oishi-server/internal/db"
+	"github.com/SahilMahale/OishiDes/oishi-server/server"
 )
 
 const totalTIckets = 50
