@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/SahilMahale/Booking-App/booking-server/internal/db"
 	"github.com/SahilMahale/Booking-App/booking-server/server"
 )
@@ -12,6 +14,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	bookingService := server.NewBookingService("Booking app", ":8080", totalTIckets, db)
+	fmt.Println("Staring server....")
+	bookingService := server.NewBookingService("Booking app", "localhost:8001", totalTIckets, db)
 	bookingService.StartBookingService()
 }

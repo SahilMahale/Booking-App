@@ -13,6 +13,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -287,5 +288,9 @@ func (B *bookingService) StartBookingService() {
 	bookingGroup.Post("", B.BookTickets)
 	bookingGroup.Delete("/:bookID", B.DeleteBooking)
 
-	B.app.Listen(B.ip)
+	err := B.app.Listen(B.ip)
+	if err != nil {
+		log.Error(err)
+		return
+	}
 }
