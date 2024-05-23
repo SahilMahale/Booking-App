@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/SahilMahale/Booking-App/booking-server/constants"
+	"github.com/SahilMahale/OishiDes/oishi-server/constants"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/golang-jwt/jwt/v5"

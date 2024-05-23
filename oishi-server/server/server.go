@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/SahilMahale/Booking-App/booking-server/internal/bookings"
-	"github.com/SahilMahale/Booking-App/booking-server/internal/db"
-	"github.com/SahilMahale/Booking-App/booking-server/internal/helper"
-	"github.com/SahilMahale/Booking-App/booking-server/internal/user"
-	"github.com/SahilMahale/Booking-App/booking-server/server/models"
+	"github.com/SahilMahale/OishiDes/oishi-server/internal/bookings"
+	"github.com/SahilMahale/OishiDes/oishi-server/internal/db"
+	"github.com/SahilMahale/OishiDes/oishi-server/internal/helper"
+	"github.com/SahilMahale/OishiDes/oishi-server/internal/user"
+	"github.com/SahilMahale/OishiDes/oishi-server/server/models"
 	"github.com/golang-jwt/jwt/v5"
 
 	"github.com/gofiber/fiber/v2"

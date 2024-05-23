@@ -30,7 +30,7 @@ export APP_AUTH=<path to secrets folder conataining generated keys>
 
 ### Starting backend for dev
 ```bash
-cd booking-server
+cd oishi-server
 go mod tidy
 go run cmd/main.go
 ```
@@ -40,7 +40,7 @@ export API_GATEWAY =<IP where backend is hosted >
 ```
 ### Starting frontend for dev
 ```bash
-cd booking-UI
+cd oishi-ui 
 pnpm install
 pnpm dev
 ```

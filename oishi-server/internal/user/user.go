@@ -3,9 +3,9 @@ package user
 import (
 	"fmt"
 
-	"github.com/SahilMahale/Booking-App/booking-server/constants"
-	"github.com/SahilMahale/Booking-App/booking-server/internal/db"
-	"github.com/SahilMahale/Booking-App/booking-server/internal/helper"
+	"github.com/SahilMahale/OishiDes/oishi-server/constants"
+	"github.com/SahilMahale/OishiDes/oishi-server/internal/db"
+	"github.com/SahilMahale/OishiDes/oishi-server/internal/helper"
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
 )
