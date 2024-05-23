@@ -33,7 +33,7 @@ export APP_AUTH=<path to secrets folder conataining generated keys>
 cd booking-server
 go mod tidy
 go run cmd/main.go
-
+```
 ### Frontend ENV variables
 ```bash 
 export API_GATEWAY =<IP where backend is hosted >
