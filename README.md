@@ -10,7 +10,7 @@ mainly to practice DB connection with gorm, implement auth from scratch and to l
     * fiber [http server](https://gofiber.io/)
     * gorm [db ORM](https://gorm.io/)  
 * Frontend  
-    * Typesctipts v5 or higher
+    * Typescript v5 or higher
     * pnpm [package manager](https://pnpm.io/)
     * vite [bundler/dev server](https://vitejs.dev/guide/why.html)
     * react
