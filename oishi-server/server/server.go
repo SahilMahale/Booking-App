@@ -134,9 +134,8 @@ func (B *bookingService) GetBookings(c *fiber.Ctx) error {
 	bookRespArr := []models.BookingsResponse{}
 	for _, book := range bookarr {
 		bookEntry := models.BookingsResponse{
-			BookingID:     book.BookingID,
-			Username:      book.UsernameRefer,
-			TicketsBooked: book.Tickets,
+			BookingID: book.BookingID,
+			Username:  book.UsernameRefer,
 		}
 		bookRespArr = append(bookRespArr, bookEntry)
 	}
