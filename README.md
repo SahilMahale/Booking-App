@@ -1,5 +1,5 @@
 # OishiDes (_oh-ee-shee des_)
-A SPA that helps manage a boutique restaurant and book customer tables, built use Go, TS, and react. 
+A SPA that helps manage a boutique restaurant and book tables for customers, built use Go, TS, react and vite. 
 
 ## Development 
 
