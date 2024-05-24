@@ -45,8 +45,11 @@ const Navbar = ({ children }: { children?: ReactNode }) => {
     console.error("Error: LogOut function not found")
     return
   }
+  let isAdmin = false
   const homeLink = appContext.isLoggedIn ? '/home' : '/'
-  const isAdmin = appContext.claims.type === 'admin'
+  if (appContext.isLoggedIn) {
+    isAdmin = appContext.claims.type === 'admin'
+  }
   return (
     <div className=" bg-slate-900 mx-auto py-2">
       <nav className=" bg-slate-950 rounded-lg text-gray-200 container mx-auto flex flex-wrap items-center justify-between">

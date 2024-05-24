@@ -38,7 +38,7 @@ let reren = 0;
 const BookTables = (bookInfo: TableGridState, selectedTablesArr: Array<number>) => {
   const selectedTablesInfo = new Map()
   selectedTablesArr.map((tableID) => {
-    selectedTablesInfo.set(tableID, bookInfo[tableID])
+    selectedTablesInfo.set(tableID, bookInfo.tablesMap.get(tableID))
   })
   const arr = []
 
@@ -163,7 +163,7 @@ function Book() {
       <div className="container mx-auto rounded-md pb-10 bg-slate-700 flex flex-col items-center ">
         <div className='drop-shadow-2xl'>
           < h2 className="font-sans text-slate-200 tracking-tight text-3xl text-center font-bold " >
-            Book Tables
+            {`Book Tables for ${userName}`}
           </h2 >
         </div>
         <div className='flex flex-col'>

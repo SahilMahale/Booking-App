@@ -39,7 +39,7 @@ export type ActionType = {
 
 const initialContext: Context = {
   isLoggedIn: false,
-  claims: { user: "", type: "" },
+  claims: { user: "dummy", type: "dummy" },
   token: '',
   isRecovered: false,
 }
@@ -83,7 +83,8 @@ const initialAppContext: AppContext = {
 }
 
 let contextVal: AppContext
-const AuthContext = createContext(initialAppContext);
+export const AuthContext = createContext<AppContext>(initialAppContext);
+
 const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const [appContext, dispatch] = useReducer<React.Reducer<Context, ActionType>>(reducer, initialContext);

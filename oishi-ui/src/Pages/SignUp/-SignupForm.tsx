@@ -42,6 +42,11 @@ export const SignupForm = ({ isAdmin = false }) => {
           <Loading />
         </div>
       )}
+      {isError && (
+        <div className='container mx-auto px-20 py-2 flex flex-col items-center '>
+          <h3>{error.message}</h3>
+        </div>
+      )}
       {!(isPending || isPaused) && (
         <div className="container mx-auto px-20 py-2 flex flex-wrap items-center justify-between ">
           <Form

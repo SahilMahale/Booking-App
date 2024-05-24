@@ -36,7 +36,9 @@ go run cmd/main.go
 ```
 ### Frontend ENV variables
 ```bash 
-export API_GATEWAY =<IP where backend is hosted >
+export API_GATEWAY=<IP where backend is hosted >
+export API_SERVER_HOST=<IP where backend is hosted while deploying in a container>
+export DEPLOY_ENV=<DEV||PROD>
 ```
 ### Starting frontend for dev
 ```bash

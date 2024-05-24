@@ -37,6 +37,8 @@ services:
       MYSQL_PASSWORD: password123 
       MYSQL_IP: mysqldb:3306 
       APP_AUTH: /app/secrets
+      SERVER_BIND_TO: 0.0.0.0:8080
+    command: /app/main
     restart: always
     depends_on:
       mysqldb:

@@ -5,7 +5,7 @@ import nonVeg from "./nonVeg.svg"
 import veg from "./veg.svg"
 import { ACTIONS, TABLESTATES } from "./-constants";
 import { useRef } from "react";
-import { Card, CardHeader, CardDescription, CardFooter, CardContent, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardDescription, CardContent, CardTitle } from "@/components/ui/card";
 import { TableInfo } from "./-mockAPI";
 import { TableState, TableStateActions } from "./Tables";
 //import { useBookingConext } from "./Book";
