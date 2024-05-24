@@ -1,8 +1,12 @@
 import { QueryFunctionContext } from '@tanstack/react-query';
 import axios from 'axios';
-const getBookingsList = async ({ queryKey }: QueryFunctionContext<[string, string, string]>) => {
+
+export interface Bookings {
+  bookingID: string
+  user: string
+}
+const getBookingsList = async ({ queryKey }: QueryFunctionContext<[string, string, string]>): Promise<Bookings[]> => {
   const [, authKey, user] = queryKey;
-  let data;
   let API_GATEWAY = process.env.API_GATEWAY
   let API_PORT = process.env.API_PORT
   if (API_GATEWAY === "" || API_GATEWAY === "localhost") {
@@ -11,7 +15,7 @@ const getBookingsList = async ({ queryKey }: QueryFunctionContext<[string, strin
   if (API_PORT === "") {
     API_PORT = "8080"
   }
-  await axios
+  const resp = await axios
     .get(`/api/bookings`, {
       headers: {
         'Content-Type': 'application/type',
@@ -21,25 +25,18 @@ const getBookingsList = async ({ queryKey }: QueryFunctionContext<[string, strin
         user,
       },
     })
-    .then((Response) => {
-      data = Response.data;
-    });
 
-  return data;
+  return resp.data;
 };
-const getUsersList = async () => {
-  let data;
-  await axios
+const getUsersList = async (): Promise<Array<string>> => {
+  const data = await axios
     .get(`/api/user/info`, {
       headers: {
         'Content-Type': 'application/type',
       },
-    })
-    .then((Response) => {
-      data = Response.data;
     });
 
-  return data;
+  return data.data;
 };
 
 const putBookings = async (user: string, tickets: number, authKey: string) => {

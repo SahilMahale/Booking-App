@@ -15,9 +15,15 @@ const notFoundRoute = new NotFoundRoute({
   getParentRoute: () => Route,
   component: () => "404 Not Found",
 })
-/* const appContext: AppContext = {} */
-const rootElement: HTMLElement | null = document.getElementById('root')
-const router = createRouter({ routeTree, notFoundRoute, defaultPreload: 'intent', context: { auth: undefined } })
+const router = createRouter({
+  routeTree,
+  notFoundRoute,
+  defaultPreload: 'intent',
+  context: {
+    auth: undefined!
+  }
+})
+
 
 declare module '@tanstack/react-router' {
   interface Register {
@@ -29,6 +35,7 @@ function InnerApp() {
   return <RouterProvider router={router} context={{ auth }} />
 }
 
+const rootElement: HTMLElement | null = document.getElementById('root')
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(
     <Suspense fallback={<Loading />}>

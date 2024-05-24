@@ -1,4 +1,3 @@
-import React from 'react';
 import { getUsersList } from '../../API/api';
 import Loading from '@/components/Loading';
 import { useQuery } from '@tanstack/react-query';
@@ -19,13 +18,21 @@ export const Route = createFileRoute('/Users/')({
   component: Users
 })
 function Users() {
-  const { data, isError, isLoading, isSuccess } = useGetUsersList();
+  const { data, isError, error, isLoading, isSuccess } = useGetUsersList();
+  if (!data) {
+    return <></>
+  }
   return (
     <div className="bg-slate-900 min-h-screen py-2 px-2">
       <div className=" container px-2 py-2  mx-auto bg-slate-800 rounded-md flex flex-col items-center">
         {isLoading && (
           <div>
             <Loading />
+          </div>
+        )}
+        {isError && (
+          <div className='container mx-auto px-20 py-2 flex flex-col items-center '>
+            <h3>{error.message}</h3>
           </div>
         )}
         {isSuccess && (
@@ -43,16 +50,16 @@ function Users() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((tupl, i: number) => (
+                  {data.map((user, index) => (
                     <tr
-                      key={i}
+                      key={index}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                     >
                       <th
                         scope="row"
                         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                       >
-                        {tupl}
+                        {user}
                       </th>
                     </tr>
                   ))}
@@ -64,5 +71,5 @@ function Users() {
       </div>
     </div>
   );
-};
+}
 

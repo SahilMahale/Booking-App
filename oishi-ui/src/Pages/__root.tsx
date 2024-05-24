@@ -1,8 +1,13 @@
+import { AppContext } from "@/Context/AuthContext"
 import Navbar from "@/components/Navbar"
-import { createRootRoute } from "@tanstack/react-router"
+import { createRootRouteWithContext } from "@tanstack/react-router"
 import { TanStackRouterDevtools } from "@tanstack/router-devtools"
 const isProd = import.meta.env.VITE_DEPLOY_ENV === "PROD"
-export const Route = createRootRoute({
+
+interface MyRouterContext {
+  auth: AppContext
+}
+export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
       <Navbar />
