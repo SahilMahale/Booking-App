@@ -16,6 +16,10 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "types": [
+      "vite/client",
+      "node"
+    ],
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,

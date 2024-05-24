@@ -1,5 +1,6 @@
+import { Bookings } from "@/API/api";
 
-const Table = ({ data, columns }: { data: Array<object>, columns: Array<string> }) => {
+const Table = ({ data, columns }: { data: Bookings[], columns: Array<string> }) => {
   return (
     <div className="py-2 relative overflow-x-auto ">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -24,7 +25,7 @@ const Table = ({ data, columns }: { data: Array<object>, columns: Array<string> 
               >
                 {tupl.user}
               </th>
-              <td className="px-6 py-4">{tupl.tickets}</td>
+              <td className="px-6 py-4">{tupl.bookingID}</td>
             </tr>
           ))}
         </tbody>
