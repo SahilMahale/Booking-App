@@ -143,7 +143,7 @@ function Book() {
   console.log("-----------------------------------------")
   const [tablesStates, dispatchTables] = useReducer<React.Reducer<TableGridState, TableStateActions>>(tableReducer, initialState);
   const { Context: appContext } = useAuth()
-  const userName = appContext.claims.user
+  const userName = appContext.claims.name
   // to avoid too many re-render
   useMemo(() => {
     cardInfo.tables.map((table) => {
