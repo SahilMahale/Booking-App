@@ -28,7 +28,6 @@ func (b BookingsController) CreateBooking(username string, tickets uint) (string
 	booking := db.Bookings{
 		BookingID:     bookid,
 		UsernameRefer: username,
-		Tickets:       tickets,
 	}
 
 	if err := b.DbInterface.Db.Create(booking); err.Error != nil {
